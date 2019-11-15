@@ -1,0 +1,79 @@
+{
+  "name": "html-missing-features",
+  "displayName": "Html missing features",
+  "version": "1.0.0",
+  "description": "Html Language Features",
+  "publisher": "SimonSiefke",
+  "main": "dist/extensionMain.js",
+  "activationEvents": [
+    "onLanguage:html",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:php",
+    "onLanguage:razor",
+    "onLanguage:svelte",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:xml",
+    "onLanguage:vue"
+  ],
+  "homepage": "https://github.com/SimonSiefke/vscode-html-language-features",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimonSiefke/vscode-html-language-features.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SimonSiefke/vscode-html-language-features/issues"
+  },
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "scripts": {
+    "dev": "cd ../../ && npm run dev",
+    "update-proposed": "npx vscode-dts dev",
+    "e2e": "rm -rf dist tsconfig.tsbuildinfo && tsc -b && cross-env NODE_ENV=test node ./dist/test/runTest.js"
+  },
+  "contributes": {
+    "keybindings": {
+      "command": "htmlMissingFeatures.wrap-selection-with-tag",
+      "key": "alt+w",
+      "mac": "alt+w",
+      "when": "editorTextFocus && !editorReadonly"
+    },
+    "commands": [
+      {
+        "command": "htmlMissingFeatures.startStreamingLogs",
+        "title": "Html Missing Features: Debug"
+      },
+      {
+        "command": "htmlMissingFeatures.wrap-selection-with-tag",
+        "title": "Html Missing Features: Wrap selection with tag"
+      }
+    ]
+  },
+  "keywords": [
+    "Auto Rename Tag",
+    "Auto Close Tag",
+    "Highlight Matching Tag",
+    "Wrap Selection With Tag"
+  ],
+  "author": "Simon Siefke",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.7",
+    "@types/vscode": "^1.40.0",
+    "@types/ws": "^6.0.3",
+    "cross-env": "^6.0.3",
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "mocha": "^6.2.2",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.7.2",
+    "vscode-test": "^1.2.3"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^6.0.0-next.5"
+  }
+}

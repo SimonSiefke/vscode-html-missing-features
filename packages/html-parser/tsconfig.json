@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig-base",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": ["node", "jest"],
+    "rootDir": "src",
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false
+  },
+  "include": ["src"]
+}

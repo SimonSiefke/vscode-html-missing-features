@@ -1,0 +1,22 @@
+{
+  "name": "service",
+  "version": "1.0.0-dev",
+  "description": "",
+  "private": true,
+  "main": "dist/serviceMain.js",
+  "scripts": {
+    "test": "jest",
+    "dev": "tsc -b -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "html-parser": "^1.0.0-dev"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0"
+  }
+}

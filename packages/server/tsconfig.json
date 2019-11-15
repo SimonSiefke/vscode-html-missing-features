@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig-noncomposite-base",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noUnusedLocals": false,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../service"
+    }
+  ]
+}

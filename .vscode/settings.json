@@ -1,0 +1,31 @@
+{
+  "files.trimTrailingWhitespace": false,
+  "editor.trimAutoWhitespace": false,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/dist/**": true,
+    "**/files*/**": true,
+    "**/tsconfig.tsbuildinfo": true
+  },
+  "files.exclude": {
+    "**/.git": false,
+    "**/.svn": false,
+    "**/.hg": false,
+    "**/CVS": false,
+    "**/.DS_Store": false,
+    "**/node_modules": false,
+    "**/dist": false,
+    "**/.vscode": false,
+    "**/tsconfig.json": false,
+    "**/tsconfig*.json": false,
+    "**/*.webpack.config.js": false,
+    ".travis.yml": false,
+    ".gitignore": false,
+    "fixtures": false,
+    "scripts": false,
+    "**/*.d.ts": false,
+    "**/tsconfig.tsbuildinfo": false,
+    "**/deprecated": false
+  }
+}

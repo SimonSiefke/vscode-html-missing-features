@@ -1,0 +1,20 @@
+{
+  "name": "html-parser",
+  "version": "1.0.0-dev",
+  "description": "",
+  "main": "dist/htmlParserMain.js",
+  "sideEffects": false,
+  "private": true,
+  "scripts": {
+    "dev": "tsc --watch",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0"
+  }
+}
