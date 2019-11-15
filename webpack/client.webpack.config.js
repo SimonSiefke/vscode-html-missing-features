@@ -25,6 +25,11 @@ module.exports = withDefaults({
       },
     },
   },
+  externals: {
+    vscode: 'commonjs vscode',
+    bufferutil: 'commonjs bufferutil',
+    'utf-8-validate': 'commonjs utf-8-validate',
+  },
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '../dist', 'packages/extension/dist'),

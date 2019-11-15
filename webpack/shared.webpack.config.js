@@ -35,9 +35,6 @@ module.exports = function withDefaults(/** @type WebpackConfig */ extConfig) {
         },
       ],
     },
-    externals: {
-      vscode: 'commonjs vscode',
-    },
     output: {
       filename: '[name].js',
       path: path.join(extConfig.context, 'dist'),
