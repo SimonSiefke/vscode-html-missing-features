@@ -4,7 +4,6 @@
     "lib": ["esnext"],
     "target": "es2019",
     "module": "commonjs",
-    // "rootDir": ".",
 
     "declaration": true,
     "declarationMap": true,
@@ -23,7 +22,6 @@
 
     "alwaysStrict": true,
     "preserveConstEnums": true,
-    // "newLine": "lf",
 
     "types": ["node"],
     "moduleResolution": "node",

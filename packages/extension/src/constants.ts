@@ -24,5 +24,5 @@ export const constants = {
     'xml',
     'vue',
   ],
-  maxAllowedChars: 80000,
+  maxAllowedChars: 180000,
 }

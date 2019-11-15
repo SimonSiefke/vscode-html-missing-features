@@ -17,13 +17,13 @@
     "onLanguage:xml",
     "onLanguage:vue"
   ],
-  "homepage": "https://github.com/SimonSiefke/vscode-html-language-features",
+  "homepage": "https://github.com/SimonSiefke/vscode-html-missing-features",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SimonSiefke/vscode-html-language-features.git"
+    "url": "https://github.com/SimonSiefke/vscode-html-missing-features.git"
   },
   "bugs": {
-    "url": "https://github.com/SimonSiefke/vscode-html-language-features/issues"
+    "url": "https://github.com/SimonSiefke/vscode-html-missing-features/issues"
   },
   "engines": {
     "vscode": "^1.40.0"
