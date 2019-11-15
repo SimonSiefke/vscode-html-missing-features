@@ -148,12 +148,8 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
     if (beforeVersion !== afterVersion) {
       return
     }
-    const positions = event.contentChanges.map(
-      ({ range, text }) =>
-        new vscode.Position(
-          range.start.line,
-          range.start.character + text.length
-        )
+    const positions = event.contentChanges.flatMap(({ range }) =>
+      range.isEmpty ? [range.start] : [range.start, range.end]
     )
     doAutoCompletionElementRenameTag(api, positions)
   })

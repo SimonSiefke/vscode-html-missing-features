@@ -493,3 +493,7 @@ at least it should not throw an error that overlapping ranges are not allowed
  -->
 
 <!-- TODO split missing features extension and html language features extension -->
+
+<!-- TODO test for this
+https://github.com/bgashler1/vscode-htmltagwrap/issues/23
+ -->
