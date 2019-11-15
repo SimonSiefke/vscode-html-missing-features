@@ -496,4 +496,5 @@ at least it should not throw an error that overlapping ranges are not allowed
 
 <!-- TODO test for this
 https://github.com/bgashler1/vscode-htmltagwrap/issues/23
+
  -->
