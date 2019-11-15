@@ -25,7 +25,7 @@
     "preserveConstEnums": true,
     // "newLine": "lf",
 
-    "types": ["node", "jest"],
+    "types": ["node"],
     "moduleResolution": "node",
     "resolveJsonModule": true
   }

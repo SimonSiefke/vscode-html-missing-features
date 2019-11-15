@@ -12,10 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "service": "^1.0.0-dev",
-    "lodash": "^4.17.15"
-  },
-  "devDependencies": {
-    "@types/lodash": "^4.14.147",
     "vscode-languageserver": "^6.0.0-next.5",
     "vscode-languageserver-textdocument": "^1.0.0-next.5"
   }

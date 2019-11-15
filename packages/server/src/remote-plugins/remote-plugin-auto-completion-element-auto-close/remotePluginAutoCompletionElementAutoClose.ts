@@ -1,4 +1,4 @@
-import { doAutoCompletionElementAutoClose } from '@html-language-features/html-language-service'
+import { doAutoCompletionElementAutoClose } from 'service'
 import {
   Position,
   Range,

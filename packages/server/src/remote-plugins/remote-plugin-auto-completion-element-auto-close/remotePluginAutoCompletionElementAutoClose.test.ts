@@ -1,9 +1,9 @@
-// import { RemotePluginApi } from '../../remotePluginApi/remotePluginApi'
+// // import { RemotePluginApi } from '../../remotePluginApi/remotePluginApi'
 
-test.skip('remotePluginAutoCompletionElementAutoClose', () => {
-  // const fakeApi: Partial<RemotePluginApi> = {
-  //   connectionProxy: {
-  //     onRequest: () => {},
-  //   },
-  // }
-})
+// test.skip('remotePluginAutoCompletionElementAutoClose', () => {
+//   // const fakeApi: Partial<RemotePluginApi> = {
+//   //   connectionProxy: {
+//   //     onRequest: () => {},
+//   //   },
+//   // }
+// })

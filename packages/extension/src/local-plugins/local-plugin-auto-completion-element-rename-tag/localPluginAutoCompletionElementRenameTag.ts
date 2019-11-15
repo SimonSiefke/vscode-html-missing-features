@@ -26,9 +26,8 @@ const requestType = new RequestType<Params, Result[], any, any>(
 const askServerForAutoCompletionsElementRenameTag: (
   api: LocalPluginApi,
   document: vscode.TextDocument,
-  positions: vscode.Position[],
-  cancelToken: CancellationToken
-) => Promise<Result[]> = async (api, document, positions, cancelToken) => {
+  positions: vscode.Position[]
+) => Promise<Result[]> = async (api, document, positions) => {
   const params: Params = {
     textDocument: api.languageClientProxy.code2ProtocolConverter.asTextDocumentIdentifier(
       document
@@ -37,7 +36,7 @@ const askServerForAutoCompletionsElementRenameTag: (
       positions
     ),
   }
-  return api.languageClientProxy.sendRequest(requestType, params, cancelToken)
+  return api.languageClientProxy.sendRequest(requestType, params)
 }
 
 /**
@@ -101,15 +100,14 @@ const doAutoCompletionElementRenameTag: (
   const results = await askServerForAutoCompletionsElementRenameTag(
     api,
     activeTextEditor.document,
-    positions,
-    cancelTokenSource.token
+    positions
   )
+  if (cancelTokenSource.token.isCancellationRequested) {
+    return
+  }
   if (latestCancelTokenSource === cancelTokenSource) {
     latestCancelTokenSource = undefined
     cancelTokenSource.dispose()
-  }
-  if (cancelTokenSource.token.isCancellationRequested) {
-    return
   }
   if (results.length === 0) {
     return

@@ -1,8 +1,4 @@
-import {
-  ScannerState,
-  TokenType,
-  createScanner,
-} from '@html-language-features/html-parser'
+import { ScannerState, TokenType, createScanner } from 'html-parser'
 
 /**
  * Completion for self-closing elements
@@ -13,10 +9,10 @@ export const doAutoCompletionElementSelfClosing: (
   text: string,
   offset: number
 ) =>
-  | ({
+  | {
       completionString: string
       completionOffset: number
-    })
+    }
   | undefined = (text, offset) => {
   const scanner = createScanner(text)
   scanner.stream.goTo(offset)

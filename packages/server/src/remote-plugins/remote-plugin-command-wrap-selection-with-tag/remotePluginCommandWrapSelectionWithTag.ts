@@ -4,7 +4,7 @@ import {
   TextDocumentIdentifier,
   RequestType,
 } from 'vscode-languageserver'
-import { doCompletionElementWrapSelectionWithTag } from '@html-language-features/html-language-service'
+import { doCompletionElementWrapSelectionWithTag } from 'service'
 
 type Result = {
   completionString: string

@@ -26,4 +26,11 @@ export const activate: (
   // localPluginHighlightElementMatchingTag(api)
 
   localPluginShowWarningMessageOnLargeFiles(api)
+
+  if (
+    process.env.NODE_ENV !== 'production' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    import('./autoreload')
+  }
 }

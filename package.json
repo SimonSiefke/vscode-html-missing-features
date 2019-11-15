@@ -4,18 +4,20 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsc -b --watch",
+    "autoreload": "nodemon --watch **/dist/** --exec node scripts/update-extension.js",
     "postinstall": "lerna bootstrap && tsc -b",
     "clean": "rimraf dist",
     "test": "",
-    "bundle:client": "webpack --mode production --config ./webpack/html-language-features.client.webpack.config.js",
-    "bundle:server": "webpack --mode production --config ./webpack/html-language-features.server.webpack.config.js",
-    "package": "npm run clean && npm run bundle:client && npm run bundle:server && node scripts/package.js && cd dist",
+    "bundle:client": "webpack --mode production --config ./webpack/client.webpack.config.js",
+    "bundle:server": "webpack --mode production --config ./webpack/server.webpack.config.js",
+    "package": "npm run clean && npm run bundle:client && npm run bundle:server && node scripts/package.js && npm run bundlesize",
     "publish": "npm run package && cd dist && npx semantic-release",
     "e2e": "cd packages/extension && npm run e2e",
     "bundlesize": "bundlesize"
   },
   "devDependencies": {
     "bundlesize": "^0.18.0",
+    "concurrently": "^5.0.0",
     "fs-extra": "^8.1.0",
     "lerna": "^3.18.4",
     "merge-options": "^2.0.0",
@@ -31,7 +33,28 @@
   "renovate": {
     "extends": "bitworkers"
   },
-  "bundlesize": [],
+  "bundlesize": [
+    {
+      "path": "./dist/packages/extension/dist/extensionMain.js",
+      "maxSize": "15.0 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/packages/extension/dist/vscode-dependencies.js",
+      "maxSize": "180 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/packages/server/dist/serverMain.js",
+      "maxSize": "25 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/packages/server/dist/vscode-dependencies.js",
+      "maxSize": "90 kB",
+      "compression": "none"
+    }
+  ],
   "prettier": {
     "semi": false,
     "trailingComma": "es5",

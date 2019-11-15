@@ -20,8 +20,8 @@ jobs:
   include:
     - stage: test
       script:
-        - npm run e2e
-        - npm test
+        # - npm run e2e
+        # - npm test
         - npm run package
     - stage: release
       script:

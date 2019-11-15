@@ -1,32 +1,4 @@
 import { doAutoCompletionElementAutoClose } from './autoCompletionElementAutoClose'
-import { replaceConfigs } from '../../Data/Data'
-
-beforeAll(() => {
-  replaceConfigs(
-    [
-      {
-        tags: {
-          h1: {
-            newline: false,
-          },
-          Daten: {
-            newline: false,
-          },
-          DatenSätze: {
-            newline: false,
-          },
-          input: {
-            selfClosing: true,
-          },
-          ul: {
-            newline: true,
-          },
-        },
-      },
-    ],
-    'test'
-  )
-})
 
 test('auto-completion-element-auto-close', () => {
   const testCases: { input: string; expected: string | undefined }[] = [

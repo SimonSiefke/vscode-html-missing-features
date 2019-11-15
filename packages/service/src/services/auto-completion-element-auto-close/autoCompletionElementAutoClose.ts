@@ -1,9 +1,4 @@
-import {
-  createScanner,
-  ScannerState,
-  TokenType,
-} from '@html-language-features/html-parser'
-import { isSelfClosingTag, shouldHaveNewline } from '../../Data/Data'
+import { createScanner, ScannerState, TokenType } from 'html-parser'
 
 const isComment: (tagName: string) => boolean = tagName =>
   tagName.startsWith('!--')
@@ -17,10 +12,10 @@ export const doAutoCompletionElementAutoClose: (
   text: string,
   offset: number
 ) =>
-  | ({
+  | {
       completionString: string
       completionOffset: number
-    })
+    }
   | undefined = (text, offset) => {
   const scanner = createScanner(text)
   scanner.stream.goTo(offset)
@@ -41,17 +36,17 @@ export const doAutoCompletionElementAutoClose: (
     return undefined
   }
   const tagName = scanner.getTokenText()
-  if (isSelfClosingTag(tagName) || isComment(tagName)) {
-    return undefined
-  }
-  let completionString: string
-  if (shouldHaveNewline(tagName)) {
-    completionString = `\n\t$0\n</${tagName}>`
-  } else {
-    completionString = `$0</${tagName}>`
-  }
+  // if (isSelfClosingTag(tagName) || isComment(tagName)) {
+  //   return undefined
+  // }
+  // let completionString: string
+  // if (shouldHaveNewline(tagName)) {
+  //   completionString = `\n\t$0\n</${tagName}>`
+  // } else {
+  //   completionString = `$0</${tagName}>`
+  // }
   return {
-    completionString,
+    completionString: '',
     completionOffset: offset,
   }
 }

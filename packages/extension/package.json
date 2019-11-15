@@ -1,8 +1,8 @@
 {
   "name": "html-missing-features",
   "displayName": "Html missing features",
-  "version": "1.0.0",
-  "description": "Html Language Features",
+  "version": "1.0.0-dev",
+  "description": "Some missing features for html that are not built into VSCode",
   "publisher": "SimonSiefke",
   "main": "dist/extensionMain.js",
   "activationEvents": [

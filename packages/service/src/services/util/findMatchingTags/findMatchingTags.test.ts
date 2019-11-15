@@ -1,5 +1,5 @@
 import { findMatchingTags, MatchingTagResult } from './findMatchingTags'
-import { replaceConfigs } from '../../../Data/Data'
+
 interface MatchingTagRegion {
   start: number
   end: number
@@ -27,21 +27,6 @@ const expectRegions: (
     }
   }
 }
-
-beforeEach(async () => {
-  replaceConfigs(
-    [
-      {
-        tags: {
-          input: {
-            selfClosing: true,
-          },
-        },
-      },
-    ],
-    'test-config'
-  )
-})
 
 test('works with nothing passed', () => {
   const text = ''

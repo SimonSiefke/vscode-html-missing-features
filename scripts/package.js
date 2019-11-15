@@ -8,9 +8,9 @@ if (!fs.existsSync(path.join(root, 'dist'))) {
 }
 
 // @ts-ignore
-const pkg = require('../packages/html-missing-features-extension/package.json')
+const pkg = require('../packages/extension/package.json')
 
-pkg.main = './packages/html-missing-features-extension/dist/extensionMain.js'
+pkg.main = './packages/extension/dist/extensionMain.js'
 
 delete pkg.dependencies
 delete pkg.devDependencies
@@ -26,22 +26,16 @@ fs.copyFileSync(path.join(root, 'README.md'), path.join(root, 'dist/README.md'))
 
 let extensionMain = fs
   .readFileSync(
-    path.join(
-      root,
-      `dist/packages/html-missing-features-extension/dist/extensionMain.js`
-    )
+    path.join(root, `dist/packages/extension/dist/extensionMain.js`)
   )
   .toString()
 
 extensionMain = extensionMain.replace(
-  '../html-language-server/dist/htmlLanguageServerMain.js',
-  './packages/html-language-server/dist/htmlLanguageServerMain.js'
+  '../server/dist/serverMain.js',
+  './packages/server/dist/serverMain.js'
 )
 
 fs.writeFileSync(
-  path.join(
-    root,
-    `dist/packages/html-missing-features-extension/dist/extensionMain.js`
-  ),
+  path.join(root, `dist/packages/extension/dist/extensionMain.js`),
   extensionMain
 )

@@ -1,7 +1,4 @@
-import {
-  createScanner,
-  ScannerState,
-} from '@html-language-features/html-parser'
+import { createScanner, ScannerState } from 'html-parser'
 
 import { getPreviousOpeningTagName } from '../util/getParentTagName'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
@@ -25,7 +22,7 @@ export const doAutoCompletionElementRenameTag: (
   | undefined = (text, offset) => {
   const scanner = createScanner(text, { initialOffset: offset })
   scanner.stream.goBack(1)
-  scanner.stream.goBackToUntilEitherChar('<', '>', '\\', ' ', '\t', '\n')
+  scanner.stream.goBackWhileRegex(/[^\s<>\\]/)
   const char = scanner.stream.peekLeft(1)
   if (char !== '<') {
     return undefined

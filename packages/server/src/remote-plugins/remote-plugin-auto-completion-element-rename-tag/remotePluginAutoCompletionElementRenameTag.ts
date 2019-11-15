@@ -1,11 +1,10 @@
-import { doAutoCompletionElementRenameTag } from '@html-language-features/html-language-service'
+import { doAutoCompletionElementRenameTag } from 'service'
 import { RemotePlugin } from '../remotePlugin'
 import {
   RequestType,
   TextDocumentIdentifier,
   Position,
 } from 'vscode-languageserver'
-import { uniqBy } from 'lodash'
 
 type Params = {
   readonly textDocument: TextDocumentIdentifier
@@ -21,6 +20,19 @@ const requestType = new RequestType<Params, Result[], any, any>(
   'html-missing-features/auto-completion-element-rename-tag'
 )
 
+const unique: <T>(items: T[]) => T[] = <T>(items: T[]) => {
+  const seen = new Set<string>()
+  const result: T[] = []
+  for (const item of items) {
+    const stringifiedItem = JSON.stringify(item)
+    if (!seen.has(stringifiedItem)) {
+      seen.add(stringifiedItem)
+      result.push(item)
+    }
+  }
+  return result
+}
+
 export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
   api.connectionProxy.onRequest(requestType, ({ textDocument, positions }) => {
     const document = api.documentsProxy.get(textDocument.uri)
@@ -32,6 +44,6 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
     const results = offsets.map(offset =>
       doAutoCompletionElementRenameTag(text, offset)
     )
-    return uniqBy(results.filter(Boolean), JSON.stringify) as Result[]
+    return unique(results.filter(Boolean)) as Result[]
   })
 }

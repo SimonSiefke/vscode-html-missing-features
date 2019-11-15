@@ -1,10 +1,4 @@
-import {
-  createScanner,
-  Scanner,
-  ScannerState,
-  TokenType,
-} from '@html-language-features/html-parser'
-import { isSelfClosingTag } from '../../Data/Data'
+import { createScanner, Scanner, ScannerState, TokenType } from 'html-parser'
 
 export const getPreviousOpeningTagName: (
   scanner: Scanner,
@@ -81,20 +75,20 @@ export const getPreviousOpeningTagName: (
       return undefined
     }
     const tokenText = scanner.getTokenText()
-    if (isSelfClosingTag(tokenText)) {
-      continue
-    }
+    // if (isSelfClosingTag(tokenText)) {
+    //   continue
+    // }
     if (selfClosing) {
       selfClosing = false
       continue
     }
     // pop closing tags from the tags
-    if (stack.length && !isSelfClosingTag(tokenText)) {
-      if (stack.pop() !== tokenText) {
-        console.error('no')
-      }
-      continue
-    }
+    // if (stack.length && !isSelfClosingTag(tokenText)) {
+    //   if (stack.pop() !== tokenText) {
+    //     console.error('no')
+    //   }
+    //   continue
+    // }
     parentTagName = tokenText
     if (parentTagName !== undefined) {
       break

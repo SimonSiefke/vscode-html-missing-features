@@ -3,8 +3,8 @@
   "include": [],
   "references": [
     { "path": "./packages/extension" },
-    { "path": "./packages/html-missing-features-server" },
-    { "path": "./packages/html-missing-features-service" },
+    { "path": "./packages/server" },
+    { "path": "./packages/service" },
     { "path": "./packages/html-parser" }
   ]
 }

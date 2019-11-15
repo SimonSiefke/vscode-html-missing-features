@@ -1,5 +1,5 @@
 import { RemotePlugin } from '../remotePlugin'
-import { doAutoCompletionElementSelfClosing } from '@html-language-features/html-language-service'
+import { doAutoCompletionElementSelfClosing } from 'service'
 import {
   Range,
   Position,

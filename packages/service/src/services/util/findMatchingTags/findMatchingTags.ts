@@ -1,9 +1,4 @@
-import {
-  createScanner,
-  ScannerState,
-  TokenType,
-} from '@html-language-features/html-parser'
-import { isSelfClosingTag } from '../../../Data/Data'
+import { createScanner, ScannerState, TokenType } from 'html-parser'
 import { getPreviousOpeningTagName } from '../getParentTagName'
 import { getNextClosingTagName } from '../getNextClosingTagName'
 
@@ -65,7 +60,7 @@ export const findMatchingTags: (
         return undefined
       }
       const tagName = scanner.getTokenText()
-      if (isSelfClosingTag(tagName)) {
+      if ('todo') {
         return {
           type: 'onlyStartTag',
           tagName,

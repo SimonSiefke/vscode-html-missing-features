@@ -39,6 +39,16 @@ export class MultiLineStream {
     this.position -= n
   }
 
+  public goBackWhileRegex(regex: RegExp): void {
+    let char
+    this.position++
+    do {
+      this.position--
+      char = this.source[this.position]
+    } while (regex.test(char) && this.position > 0)
+    this.position++
+  }
+
   public advance(n: number): void {
     this.position += n
   }

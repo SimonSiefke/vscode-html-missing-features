@@ -1,11 +1,4 @@
-import {
-  Scanner,
-  ScannerState,
-  TokenType,
-  createScanner,
-} from '@html-language-features/html-parser'
-
-import { isSelfClosingTag } from '../../Data/Data'
+import { Scanner, ScannerState, TokenType, createScanner } from 'html-parser'
 
 export const getNextClosingTagName: (
   scanner: Scanner,
@@ -71,9 +64,9 @@ export const getNextClosingTagName: (
           return undefined
         }
         const tokenText = scanner.getTokenText()
-        if (isSelfClosingTag(tokenText)) {
-          continue
-        }
+        // if ('todo 'isSelfClosingTag(tokenText)) {
+        //   continue
+        // }
         // push opening tag onto the stack
         stack.push(tokenText)
         continue
