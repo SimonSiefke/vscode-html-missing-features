@@ -11,7 +11,11 @@ import { LocalPluginApi } from '../../local-plugin-api/localPluginApi'
 
 type Params = {
   readonly textDocument: TextDocumentIdentifier
-  readonly positions: Position[]
+  readonly changes: {
+    readonly rangeOffset: number
+    readonly rangeLength: number
+    readonly text: string
+  }[]
 }
 type Result = {
   readonly startOffset: number
@@ -26,15 +30,17 @@ const requestType = new RequestType<Params, Result[], any, any>(
 const askServerForAutoCompletionsElementRenameTag: (
   api: LocalPluginApi,
   document: vscode.TextDocument,
-  positions: vscode.Position[]
-) => Promise<Result[]> = async (api, document, positions) => {
+  changes: readonly vscode.TextDocumentContentChangeEvent[]
+) => Promise<Result[]> = async (api, document, changes) => {
   const params: Params = {
     textDocument: api.languageClientProxy.code2ProtocolConverter.asTextDocumentIdentifier(
       document
     ),
-    positions: api.languageClientProxy.code2ProtocolConverter.asPositions(
-      positions
-    ),
+    changes: changes.map(change => ({
+      rangeOffset: change.rangeOffset,
+      rangeLength: change.rangeLength,
+      text: change.text,
+    })),
   }
   return api.languageClientProxy.sendRequest(requestType, params)
 }
@@ -86,8 +92,8 @@ let latestCancelTokenSource: CancellationTokenSource | undefined
 
 const doAutoCompletionElementRenameTag: (
   api: LocalPluginApi,
-  positions: vscode.Position[]
-) => Promise<void> = async (api, positions) => {
+  changes: readonly vscode.TextDocumentContentChangeEvent[]
+) => Promise<void> = async (api, changes) => {
   if (latestCancelTokenSource) {
     latestCancelTokenSource.cancel()
   }
@@ -100,8 +106,9 @@ const doAutoCompletionElementRenameTag: (
   const results = await askServerForAutoCompletionsElementRenameTag(
     api,
     activeTextEditor.document,
-    positions
+    changes
   )
+  console.log('results' + JSON.stringify(results))
   if (cancelTokenSource.token.isCancellationRequested) {
     return
   }
@@ -148,9 +155,6 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
     if (beforeVersion !== afterVersion) {
       return
     }
-    const positions = event.contentChanges.flatMap(({ range }) =>
-      range.isEmpty ? [range.start] : [range.start, range.end]
-    )
-    doAutoCompletionElementRenameTag(api, positions)
+    doAutoCompletionElementRenameTag(api, event.contentChanges)
   })
 }

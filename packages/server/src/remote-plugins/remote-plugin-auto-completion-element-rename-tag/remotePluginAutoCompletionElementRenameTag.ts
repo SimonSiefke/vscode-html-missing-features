@@ -5,10 +5,16 @@ import {
   TextDocumentIdentifier,
   Position,
 } from 'vscode-languageserver'
+import { constants } from '../../constants'
 
+type Change = {
+  readonly rangeOffset: number
+  readonly rangeLength: number
+  readonly text: string
+}
 type Params = {
   readonly textDocument: TextDocumentIdentifier
-  readonly positions: Position[]
+  readonly changes: Change[]
 }
 type Result = {
   readonly startOffset: number
@@ -33,16 +39,29 @@ const unique: <T>(items: T[]) => T[] = <T>(items: T[]) => {
   return result
 }
 
+const irrelevantChangeRE = /^[<>]$/
+
+const isRelevantChange: (change: Change) => boolean = change => {
+  return change.rangeLength > 0 || !irrelevantChangeRE.test(change.text)
+}
+
 export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
-  api.connectionProxy.onRequest(requestType, ({ textDocument, positions }) => {
+  api.connectionProxy.onRequest(requestType, ({ textDocument, changes }) => {
     const document = api.documentsProxy.get(textDocument.uri)
     if (!document) {
       return undefined
     }
+    const matchingTagPairs = constants.matchingTagPairs[document.languageId]
+    if (!matchingTagPairs) {
+      throw new Error(
+        `missing matching tag pairs for language id ${document.languageId}`
+      )
+    }
+    const relevantChanges = changes.filter(isRelevantChange)
     const text = document.getText()
-    const offsets = positions.map(position => document.offsetAt(position))
+    const offsets = relevantChanges.map(change => change.rangeOffset)
     const results = offsets.map(offset =>
-      doAutoCompletionElementRenameTag(text, offset)
+      doAutoCompletionElementRenameTag(text, offset, matchingTagPairs)
     )
     return unique(results.filter(Boolean)) as Result[]
   })

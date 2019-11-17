@@ -78,10 +78,6 @@ Having
 and deleting, let's say <test2 or </test2>, it should automatically remove the pairing tag.
  -->
 
-<!-- multi cursor support for auto rename tag and others -->
-
-<!-- TODO caching for get documentation or make it faster because currently its slow -->
-
 <!-- TODO parsing error
 
 <!DOCTYPE html>
@@ -212,15 +208,6 @@ maybe merge auto-rename-tag and highlight-matching-tag since they both need to k
 separately
  -->
 
-<!--
-figure out why `!??` is a suggested tag inside a `div`
-
-filter out custom tags like `<todo-item>` when fetching sites
-
-<!-- analyze error (statistics): https://github.com/lyons194/Intellident-Website-Python-Flask -->
-
--->
-
 <!-- TODO
 autoclose tag bug
 
@@ -236,13 +223,6 @@ test https://youtrack.jetbrains.com/issue/WEB-18206
 </div>
 
 
- -->
-
-<!-- TODO
-completion for input/autocomplete https://youtrack.jetbrains.com/issue/WEB-32612
-
- -->
-
 <!-- TODO
 
 not sure
@@ -256,72 +236,8 @@ https://youtrack.jetbrains.com/issue/WEB-28014
 https://youtrack.jetbrains.com/issue/WEB-28004
  -->
 
-<!-- TODO idea
-fuzzy search for attributes
-<input tt> -> <input type="text">
-<input tn> -> <input type="number">
- -->
-
- <!-- TODO idea
- need a way to go inside tag
- input -> <input>|
- input -> <input | > -> <input tt| > -> <input type="text" | >
- input -> <input | > -> <input tn| > -> <input type="number" | >
-
-  -->
-
 <!-- TODO
 https://youtrack.jetbrains.com/issue/WEB-13292
- -->
-
-<!-- TODO
-very interesting, maybe also for adding attribute(classes or something)
-https://youtrack.jetbrains.com/issue/WEB-14154
-
-original request is to wrap with tag:
-<h1>hello world</h1>.div -> wrapping with div
-
-another idea is similar to auto-class-id
-<h1>.</h1> -> <h1 | ></h1>
-<h1></h1>. -> <h1 | ></h1>
-go inside the tag
- -->
-
-<!-- TODO
-class name validation
-https://youtrack.jetbrains.com/issue/WEB-8150
-in cooperation with css language server / class name provider
- -->
-
-<!-- TODO
-
-sparkup
-https://youtrack.jetbrains.com/issue/WEB-537
- -->
-
-<!-- TODO idea
-ul li a*3
-<ul>
-  <li><a></a></li>
-  <li><a></a></li>
-  <li><a></a></li>
-</ul>
-
-apply multiplication to sensible selector
-
-ul li a lorem10*3
-
-
-
-p+p
-<p></p>
-<p></p>
- -->
-
-<!-- TODO
-attribute types https://www.w3.org/TR/REC-html40/index/attributes.html
-and https://www.w3.org/TR/2017/REC-html52-20171214/fullindex.html#attributes-table
-
  -->
 
 <!-- TODO
@@ -330,45 +246,8 @@ new completion api
 https://code.visualstudio.com/updates/v1_40#_support-intellisense-replace-mode
  -->
 
-<!-- TODO
-align attributes wrong because notes
-
- -->
-
-<!-- TODO
-
-autocapitalization wrong because of multiple
- -->
-
-<!-- TODO
-missing
-link#importance
- -->
-
-<!-- TODO
-tests for fuzzy attribute search
-
- -->
-
 <!-- TODO bug
 https://github.com/microsoft/vscode/issues/82556
- -->
-
-<!-- TODO auto rename tag bug
-
-```
-<svg viewBox="0 0 100 100">
-  <circle cx="0" cy="20" r="20" />
-  <path
-    d="M91.942 91.212c-.676-.312-1.52-.896-1.876-1.3-.355-.402-3.626-5.64-7.267-11.64L67.69 53.38c-4.67-7.69-8.856-14.376-9.303-14.856-2.2-2.36-6.232-1.847-7.897 1.003-.938 1.607-.796 3.486.44 5.82.896 1.687 1.038 2.253 1.043 4.148.013 4.998-3.26 8.313-8.608 8.717-1.873.142-2.525.328-3.23.922-.487.41-4.05 4.64-7.92 9.403-3.87 4.762-7.33 8.924-7.693 9.25-.924.826-3.62 1.02-4.914.35-2.01-1.04-2.89-3.656-1.943-5.782.32-.718 6.184-11.4 13.034-23.74C37.544 36.278 43.374 25.74 43.65 25.2c.998-1.957.39-4.218-1.434-5.33-2.14-1.303-4.003-.56-6.71 2.674-1.063 1.267-2.56 2.82-3.327 3.447-3.72 3.047-4.39 3.18-15.3 3.06l-8.837-.1-1.844-.86c-2.388-1.116-4.01-2.69-5.09-4.945-1.16-2.412-1.4-4.51-.788-6.895.597-2.33 1.556-3.88 3.407-5.51 2.862-2.52.88-2.37 31.663-2.47 19.077-.064 27.955.012 29.348.25 4.27.733 8.29 3.674 10.38 7.593.83 1.556 6.15 16.138 13.595 37.267.982 2.79 3.854 10.88 6.382 17.978 2.528 7.098 4.692 13.345 4.81 13.88.48 2.206-1.046 4.933-3.347 5.978-1.58.717-3.063.716-4.622-.003z"
-  />
-
-
-
-  <!-- --\>
-</path>
-
-type enter inside the command, renames the path tag to a start comment
  -->
 
 <!-- TODO auto rename tag bug
@@ -497,4 +376,52 @@ at least it should not throw an error that overlapping ranges are not allowed
 <!-- TODO test for this
 https://github.com/bgashler1/vscode-htmltagwrap/issues/23
 
+ -->
+
+<!-- TODO razor test
+<!-- Single statement block --\>
+@{ var myMessage = "Hello World"; }
+
+<!-- Inline expression or variable --\>
+<p>The value of myMessage is: @myMessage</p>
+
+<!-- Multi-statement block --\>
+@{
+var greeting = "Welcome to our site!";
+var weekDay = DateTime.Now.DayOfWeek;
+var greetingMessage = greeting + " Today is: " + weekDay;
+}
+<p>The greeting is: @greetingMessage</p>
+ -->
+
+<!-- TODO bug
+<template>
+  <button>
+    </button>
+</template>
+
+renaming </template> renames the button
+ -->
+
+<!-- TODO bug
+<template>
+  <button>
+  </button>
+
+</template>
+
+format on save makes it
+
+<template>
+  <button></button>
+</template>
+
+then auto rename tag makes it
+
+<template>
+  <template></button>
+</template>
+
+
+probably same issue as two above
  -->

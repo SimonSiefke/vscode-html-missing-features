@@ -13,10 +13,15 @@ const requestType = new RequestType<
   any
 >('html-missing-features/auto-completion-insert-quotes-after-equal-sign')
 
+const enabledLanguageIds = ['html', 'php']
+
 export const remotePluginAutoCompletionInsertQuotesAfterEqualSign: RemotePlugin = api => {
   api.connectionProxy.onRequest(requestType, ({ textDocument, position }) => {
     const document = api.documentsProxy.get(textDocument.uri)
     if (!document) {
+      return undefined
+    }
+    if (!enabledLanguageIds.includes(document.languageId)) {
       return undefined
     }
     const text = document.getText()

@@ -13,12 +13,16 @@ export interface Constants {
 
 export const constants = {
   allowedLanguageIds: [
+    'erb',
     'html',
+    'markdown',
     'javascript',
     'javascriptreact',
+    'plaintext',
     'php',
     'razor',
     'svelte',
+    'svg',
     'typescript',
     'typescriptreact',
     'xml',

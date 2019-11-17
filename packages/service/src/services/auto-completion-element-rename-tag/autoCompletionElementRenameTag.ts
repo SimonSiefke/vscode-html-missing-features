@@ -12,14 +12,15 @@ import { getNextClosingTagName } from '../util/getNextClosingTagName'
 //       </h1>
 export const doAutoCompletionElementRenameTag: (
   text: string,
-  offset: number
+  offset: number,
+  matchingTagPairs?: [string, string][]
 ) =>
   | {
       startOffset: number
       endOffset: number
       word: string
     }
-  | undefined = (text, offset) => {
+  | undefined = (text, offset, matchingTagPairs = []) => {
   const scanner = createScanner(text, { initialOffset: offset })
   scanner.stream.goBack(1)
   scanner.stream.goBackWhileRegex(/[^\s<>\\]/)
@@ -74,6 +75,9 @@ export const doAutoCompletionElementRenameTag: (
     if (scanner.stream.previousChars(2) === '--') {
       return undefined
     }
+    if (scanner.stream.previousChars(1) === '/') {
+      return undefined
+    }
     scanner.stream.advance(1)
     const nextClosingTag = getNextClosingTagName(
       scanner,
@@ -98,10 +102,7 @@ export const doAutoCompletionElementRenameTag: (
 }
 
 // TODO add to tests
-const text = `<h1>
-         hello world
-         <!-- <h11 -->
-       </h1>`
-doAutoCompletionElementRenameTag(text, 43) //?
+const text = `<div><button/></div>`
+doAutoCompletionElementRenameTag(text, 10) //?
 // doAutoCompletionElementRenameTag('<input></dov>', 10) //?
 // createDoAutoRenameTagCompletion('', 5) //?
