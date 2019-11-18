@@ -95,7 +95,7 @@ suite('Auto Rename Tag', () => {
         expect: '<divv class="css">test</divv>',
       },
     ]
-    await run(testCases, { speed: slowSpeed })
+    await run(testCases, { speed: slowSpeed, timeout: slowTimeout })
   })
 
   test('multiple line', async () => {
