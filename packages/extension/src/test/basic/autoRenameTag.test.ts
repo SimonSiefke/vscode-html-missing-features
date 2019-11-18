@@ -384,10 +384,6 @@ suite('Auto Rename Tag', () => {
     await run(testCases)
   })
 
-  test('bug 3', () => {
-    // const testCases:TestCase[]=[{}]
-  })
-
   test('type space after bu', async () => {
     const testCases: TestCase[] = [
       {
@@ -405,69 +401,6 @@ suite('Auto Rename Tag', () => {
     })
   })
 
-  test.skip('language html', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
-  })
-
-  test.skip('language erb', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
-  })
-
-  test.skip('language markdown', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
-  })
-  test.skip('language javascriptreact', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
-  })
-
   test('language plaintext', async () => {
     await createTestFile('auto-rename-tag.language.txt')
     const testCases: TestCase[] = [
@@ -480,22 +413,6 @@ suite('Auto Rename Tag', () => {
     await run(testCases, {
       timeout: slowTimeout,
     })
-  })
-
-  test.skip('language php', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
   })
 
   test.skip('language razor', async () => {
@@ -512,60 +429,6 @@ suite('Auto Rename Tag', () => {
       },
     ]
     await run(testCases)
-  })
-
-  test('language svelte', async () => {
-    await createTestFile('auto-rename-tag.language.svelte')
-    const testCases: TestCase[] = [
-      {
-        input: `<script>
-	let count = 1;
-
-	function handleClick() {
-		count += 1;
-	}
-</script>
-
-<button| on:click={handleClick}>
-	Count: {count}
-</button>`,
-        type: '2',
-        expect: `<script>
-	let count = 1;
-
-	function handleClick() {
-		count += 1;
-	}
-</script>
-
-<button2 on:click={handleClick}>
-	Count: {count}
-</button2>`,
-      },
-    ]
-    await run(testCases)
-  })
-
-  test('language svg', async () => {
-    await createTestFile('auto-rename-tag.language.svg')
-    const testCases: TestCase[] = [
-      {
-        input: `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg| xmlns="http://www.w3.org/2000/svg" width="500" height="500">
-<circle cx="250" cy="250" r="210" fill="#fff" stroke="#000" stroke-width="8"/>
-</svg>
-`,
-        type: '2',
-        expect: `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg2 xmlns="http://www.w3.org/2000/svg" width="500" height="500">
-<circle cx="250" cy="250" r="210" fill="#fff" stroke="#000" stroke-width="8"/>
-</svg2>
-`,
-      },
-    ]
-    await run(testCases, {
-      timeout: slowTimeout,
-    })
   })
 
   test.skip('language typescript', async () => {

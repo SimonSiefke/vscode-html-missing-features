@@ -92,7 +92,13 @@ const tests: Test[] = [
     path: 'advanced/language-ruby',
   },
   {
+    path: 'advanced/language-markdown',
+  },
+  {
     path: 'advanced/language-svelte',
+  },
+  {
+    path: 'advanced/language-svg',
   },
   {
     path: 'advanced/language-typescriptreact',
