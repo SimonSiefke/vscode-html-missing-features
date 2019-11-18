@@ -258,7 +258,6 @@ suite('Auto Rename Tag', () => {
         input: '<!-- <div|></div> -->',
         type: 'v',
         expect: '<!-- <divv></divv> -->',
-        skip: true,
       },
       {
         input: '<div|><!-- </div>',
@@ -291,7 +290,7 @@ suite('Auto Rename Tag', () => {
         expect: '<div><!-- <divv></divv> -->',
       },
     ]
-    await run(testCases)
+    await run(testCases, { timeout: slowTimeout })
   })
 
   test('auto rename tag - bug 1', async () => {
@@ -555,9 +554,15 @@ suite('Auto Rename Tag', () => {
         type: 'b',
         expect: `<ababab></ababab>`,
       },
+      {
+        input: `<aaa></a|a|a|>`,
+        type: 'b',
+        expect: `<ababab></ababab>`,
+      },
     ]
     await run(testCases, {
       timeout: slowTimeout,
+      speed: slowSpeed,
     })
   })
 })

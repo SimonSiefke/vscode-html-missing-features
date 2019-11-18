@@ -427,3 +427,9 @@ probably same issue as two above
  -->
 
 <!-- TODO adjust getpreviousOpenTagName like getNextClosingTagName to work with jsx comment (probably only need to integrate matchingTagPairs) -->
+
+<!-- TODO getpreviousOpenTagName test
+<a>, 4
+
+should be <a>
+ -->

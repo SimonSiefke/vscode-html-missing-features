@@ -1,6 +1,6 @@
 import { createScanner, ScannerState } from 'html-parser'
 
-import { getPreviousOpeningTagName } from '../util/getParentTagName'
+import { getPreviousOpeningTagName } from '../util/getPreviousOpenTagName'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
 
 // TODO: bug inside comment
@@ -41,11 +41,12 @@ export const doAutoCompletionElementRenameTag: (
     scanner.state = ScannerState.AfterOpeningEndTag
     scanner.scan()
     const tagName = scanner.getTokenText()
-    scanner.stream.goTo(currentPosition)
-    scanner.stream.goBackToUntilChar('<')
+    scanner.stream.goTo(currentPosition - 2)
+
     const parent = getPreviousOpeningTagName(
       scanner,
-      scanner.stream.position - 2
+      scanner.stream.position,
+      matchingTagPairs
     )
     if (!parent) {
       return undefined
@@ -103,8 +104,11 @@ export const doAutoCompletionElementRenameTag: (
 }
 
 // TODO add to tests
-const text = `const button = <button> {/* <buttonn> */}</button>`
-// const text = `<divvvv><!-- </div> --> </div>`
-doAutoCompletionElementRenameTag(text, 33, [['/*', '*/']]) //?
-// doAutoCompletionElementRenameTag('<input></dov>', 10) //?
-// createDoAutoRenameTagCompletion('', 5) //?
+// const text = `<button>{/* <button> */}</buttonn>`
+// doAutoCompletionElementRenameTag(text, 30, [['/*', '*/']]) //?
+
+// const text = `<div><!-- </div> --> </dddddddd>`
+// doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?
+
+const text = `<a></b>`
+doAutoCompletionElementRenameTag(text, 6, [['<!--', '-->']]) //?

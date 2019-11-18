@@ -1,5 +1,5 @@
 import { createScanner, ScannerState, TokenType } from 'html-parser'
-import { getPreviousOpeningTagName } from '../getParentTagName'
+import { getPreviousOpeningTagName } from '../getPreviousOpenTagName'
 import { getNextClosingTagName } from '../getNextClosingTagName'
 
 export type MatchingTagResult =
@@ -22,10 +22,11 @@ export type MatchingTagResult =
 
 export const findMatchingTags: (
   text: string,
-  offset: number
-) => MatchingTagResult | undefined = (text, offset) => {
+  offset: number,
+  matchingTagPairs: [string, string][]
+) => MatchingTagResult | undefined = (text, offset, matchingTagPairs) => {
   const scanner = createScanner(text, { initialOffset: offset })
-  scanner.stream.goBackToUntilEitherChar('<', '>')
+  scanner.stream.goBackUntilEitherChar(['<', '>'], matchingTagPairs)
   const char = scanner.stream.peekLeft(1) //?
   if (char === '<') {
     if (scanner.stream.nextChars(3) === '!--') {
@@ -41,7 +42,8 @@ export const findMatchingTags: (
       // TODO This is the bug
       const previousOpenTagName = getPreviousOpeningTagName(
         scanner,
-        endTagOffset - 2
+        endTagOffset - 2,
+        matchingTagPairs
       )
       if (!previousOpenTagName || tagName !== previousOpenTagName.tagName) {
         return undefined
@@ -115,19 +117,23 @@ export const findMatchingTags: (
       return undefined
     }
     scanner.stream.goBack(2)
-    scanner.stream.goBackToUntilEitherChar('<', '>')
+    scanner.stream.goBackUntilEitherChar(['<', '>'], matchingTagPairs)
     const char = scanner.stream.peekLeft(1) //?
     if (char === '>') {
       return undefined
     }
-    return findMatchingTags(scanner.stream.getSource(), scanner.stream.position)
+    return findMatchingTags(
+      scanner.stream.getSource(),
+      scanner.stream.position,
+      matchingTagPairs
+    )
   }
   return undefined
 }
 
-const text = `<h1>
-         hello world
-         <!-- <h1 -->
-       </h1>`
+// const text = `<h1>
+//          hello world
+//          <!-- <h1 -->
+//        </h1>`
 // findMatchingTags('<View><View /></View>', 14) //?
-findMatchingTags(text, 46) //?
+// findMatchingTags(text, 46) //?

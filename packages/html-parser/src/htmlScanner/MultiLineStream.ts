@@ -96,28 +96,52 @@ export class MultiLineStream {
     this.position++
   }
 
-  public goBackToUntilEitherChar(...chars: string[]): void {
-    while (this.position >= 0 && !chars.includes(this.source[this.position])) {
-      // console.log('minus')
+  public goBackUntilEitherChar(
+    chars: string[],
+    matchingTagPairs: [string, string][]
+  ): boolean {
+    while (this.position > 0) {
+      // don't go outside of matching tag pair, e.g. don't go before '<!--' in '<!-- <but|ton> --> '
+      outerForLoop1: for (const matchingTagPair of matchingTagPairs) {
+        for (let j = 0; j < matchingTagPair[0].length; j++) {
+          if (
+            matchingTagPair[0][matchingTagPair[0].length - 1 - j] !==
+            this.source[this.position - j]
+          ) {
+            continue outerForLoop1
+          }
+        }
+        return false
+      }
+      // skip matching tag pairs, e.g. skip '<!-- </button> -->' in '<button><!-- </button> --></button>'
+      outerForLoop2: for (const matchingTagPair of matchingTagPairs) {
+        for (let i = 0; i < matchingTagPair[1].length; i++) {
+          if (
+            matchingTagPair[1][matchingTagPair[1].length - 1 - i] !==
+            this.source[this.position - i]
+          ) {
+            continue outerForLoop2
+          }
+        }
+        this.goBackToUntilChars(matchingTagPair[0])
+        this.goBack(matchingTagPair[0].length + 1)
+        return this.goBackUntilEitherChar(chars, matchingTagPairs)
+      }
+      if (chars.includes(this.source[this.position])) {
+        this.position++
+        return true
+      }
       this.position--
     }
-    // console.log(chars)
-    // console.log(this.position)
-    // console.log(this.source[this.position])
-    // console.log(!chars.includes(this.source[this.position]))
-    // console.log(this.position >= 0)
-    // console.log('plus')
-    this.position++
+    return false
   }
   public advanceUntilEitherChar(
     chars: string[],
     matchingTagPairs: [string, string][]
   ): boolean {
     while (this.position < this.source.length) {
-      const sourceChar = this.source[this.position]
       // don't go outside of matching tag pair, e.g. don't go past '-->' in '<!-- <but|ton> --> '
       outerForLoop1: for (const matchingTagPair of matchingTagPairs) {
-        console.log(matchingTagPair)
         for (let j = 0; j < matchingTagPair[1].length; j++) {
           if (matchingTagPair[1][j] !== this.source[this.position + j]) {
             continue outerForLoop1
@@ -136,13 +160,12 @@ export class MultiLineStream {
         this.advance(matchingTagPair[1].length)
         return this.advanceUntilEitherChar(chars, matchingTagPairs)
       }
-      if (chars.includes(sourceChar)) {
+      if (chars.includes(this.source[this.position])) {
         return true
       }
       this.position++
     }
     return false
-    // this.position--
   }
 
   public peekLeft(n: number = 0): string {

@@ -1,4 +1,4 @@
-# completionElementAutoRenameTag
+# autoCompletionElementRenameTag
 
 ```
 <u|>

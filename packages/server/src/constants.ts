@@ -15,7 +15,7 @@ export const constants: Constants = {
     markdown: [
       ['<!--', '-->'],
       ['```', '```'],
-      ['<?php', '?>'],
+      ['<?', '?>'],
     ],
     plaintext: [['<!--', '-->']],
     php: [

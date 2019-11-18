@@ -1,7 +1,7 @@
 import {
   getPreviousOpeningTagName,
   // getNextClosingTag,
-} from '../util/getParentTagName'
+} from '../util/getPreviousOpenTagName'
 import { createScanner } from 'html-parser'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
 
@@ -37,7 +37,11 @@ export const doAutoCompletionElementClose: (
     if (i++ > 1) {
       return undefined
     }
-    const previousOpeningTagName = getPreviousOpeningTagName(scanner, before)
+    const previousOpeningTagName = getPreviousOpeningTagName(
+      scanner,
+      before,
+      []
+    )
     const nextClosingTagName = getNextClosingTagName(scanner, after, [
       ['<!--', '-->'],
     ])
