@@ -20,7 +20,7 @@ export const constants: Constants = {
     plaintext: [['<!--', '-->']],
     php: [
       ['<!--', '-->'],
-      ['<?php', '?>'],
+      ['<?', '?>'],
     ],
     javascriptreact: [['/*', '*/']],
     razor: [
@@ -29,7 +29,10 @@ export const constants: Constants = {
     ],
     svelte: [['<!--', '-->']],
     typescriptreact: [['/*', '*/']],
-    xml: [['<!--', '-->']],
+    xml: [
+      ['<!--', '-->'],
+      ['<?', '?>'],
+    ],
     vue: [['<!--', '-->']],
   },
 }

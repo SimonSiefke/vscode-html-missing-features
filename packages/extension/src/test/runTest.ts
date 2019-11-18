@@ -66,6 +66,9 @@ const tests: Test[] = [
   {
     path: 'advanced/language-ruby',
   },
+  {
+    path: 'advanced/language-xml',
+  },
 ]
 ;(async () => {
   const onlyTest = tests.find(test => test.only)
