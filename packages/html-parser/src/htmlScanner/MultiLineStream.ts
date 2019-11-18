@@ -123,7 +123,7 @@ export class MultiLineStream {
         }
         this.advanceUntilChars(matchingTagPair[1])
         this.advance(matchingTagPair[1].length)
-        this.advanceUntilEitherChar(chars, matchingTagPairs)
+        return this.advanceUntilEitherChar(chars, matchingTagPairs)
       }
       if (chars.includes(sourceChar)) {
         return

@@ -58,6 +58,9 @@ const tests: Test[] = [
     path: 'basic',
   },
   {
+    path: 'advanced/language-javascriptreact',
+  },
+  {
     path: 'advanced/language-php',
   },
   {

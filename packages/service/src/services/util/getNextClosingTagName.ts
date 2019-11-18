@@ -100,12 +100,6 @@ export const getNextClosingTagName: (
   }
 }
 
-const text = `<divv class = 'bg-warning'>
-  <!-- </div> -->
-  <?php displayErrors($errors); ?>
-</div>`
+const text = `const button = <button> {/* </button> */}</button>;`
 
-getNextClosingTagName(createScanner(text), 2, [
-  ['<!--', '-->'],
-  ['<?php', '?>'],
-]) //?
+getNextClosingTagName(createScanner(text), 23, [['/*', '*/']]) //?
