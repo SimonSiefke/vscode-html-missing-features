@@ -98,6 +98,9 @@ const tests: Test[] = [
     path: 'advanced/language-typescriptreact',
   },
   {
+    path: 'advanced/language-vue',
+  },
+  {
     path: 'advanced/language-xml',
   },
 ]

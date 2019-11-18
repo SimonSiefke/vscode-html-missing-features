@@ -13,9 +13,29 @@ test('language svelte', async () => {
   await vscode.window.showTextDocument(document)
   const testCases: TestCase[] = [
     {
-      input: `<span|><%= project.logo_tag %> <%= project.name %></span>`,
-      type: 'n',
-      expect: `<spann><%= project.logo_tag %> <%= project.name %></spann>`,
+      input: `<script>
+	let count = 1;
+
+	function handleClick() {
+		count += 1;
+	}
+</script>
+
+<button| on:click={handleClick}>
+	Count: {count}
+</button>`,
+      type: '2',
+      expect: `<script>
+	let count = 1;
+
+	function handleClick() {
+		count += 1;
+	}
+</script>
+
+<button2 on:click={handleClick}>
+	Count: {count}
+</button2>`,
     },
   ]
   await run(testCases, {

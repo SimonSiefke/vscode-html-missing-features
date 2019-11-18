@@ -10,18 +10,44 @@ test('language vue', async () => {
   const document = await vscode.workspace.openTextDocument(getUri('index.vue'))
   await vscode.window.showTextDocument(document)
   const testCases: TestCase[] = [
-    // {
-    //   input: `<span|><%= project.logo_tag %> <%= project.name %></span>`,
-    //   type: 'n',
-    //   expect: `<spann><%= project.logo_tag %> <%= project.name %></spann>`,
-    // },
+    {
+      input: `<template>
+  <div| id="app">
+    {{ message }}
+  </div>
+</template>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>`,
+      type: 'v',
+      expect: `<template>
+  <divv id="app">
+    {{ message }}
+  </divv>
+</template>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>`,
+    },
   ]
   await run(testCases, {
     timeout: slowTimeout,
   })
 })
 
-test('format on save bug', async () => {
+test.skip('format on save bug', async () => {
   await activateExtension()
   const document = await vscode.workspace.openTextDocument(getUri('index.vue'))
   await vscode.window.showTextDocument(document)
