@@ -8,7 +8,6 @@ import {
   slowTimeout,
 } from '../test-utils'
 
-// const slowSpeed = 70
 const slowSpeed = 95 * ciSlowNess
 
 suite('Auto Rename Tag', () => {
@@ -17,7 +16,7 @@ suite('Auto Rename Tag', () => {
     await activateExtension()
   })
 
-  test.skip('Cursor is at the back of a start tag', async () => {
+  test('Cursor is at the back of a start tag', async () => {
     const testCases: TestCase[] = [
       {
         input: '<div|>test</div>',
@@ -33,6 +32,7 @@ suite('Auto Rename Tag', () => {
         input: '<div|>test</div>',
         type: '{backspace}{backspace}{backspace}',
         expect: '<>test</>',
+        skip: true,
       },
       {
         input: '<div|>test</div>',
@@ -48,6 +48,7 @@ suite('Auto Rename Tag', () => {
         input: '<div|>test</div>',
         type: '{backspace}{backspace}{backspace} ',
         expect: '< >test</>',
+        skip: true,
       },
       {
         input: '<div|>test</div>',
@@ -60,7 +61,9 @@ suite('Auto Rename Tag', () => {
         expect: '<divv>test</divv>',
       },
     ]
-    await run(testCases)
+    await run(testCases, {
+      speed: slowSpeed,
+    })
   })
 
   test('Cursor at the front of a start tag', async () => {
@@ -100,7 +103,7 @@ suite('Auto Rename Tag', () => {
     await run(testCases, { speed: slowSpeed, timeout: slowTimeout })
   })
 
-  test('multiple line', async () => {
+  test('multiple lines', async () => {
     const testCases: TestCase[] = [
       {
         input: '<div|>\n  test\n</div>',
@@ -118,18 +121,19 @@ suite('Auto Rename Tag', () => {
         input: '<div|>\n  <span>test</span>\n</div>',
         type: '{backspace}{backspace}{backspace}h3',
         expect: '<h3>\n  <span>test</span>\n</h3>',
-        skip: true,
       },
       {
         input: '<div>\n  <span|>test</span>\n</div>',
         type: '{backspace}{backspace}{backspace}{backspace}b',
         expect: '<div>\n  <b>test</b>\n</div>',
       },
-      // {
-      //   input: '<div>\n  <span|>test</span>\n</div>',
-      // },
+      {
+        input: '<div>\n  <span|>test</span>\n</div>',
+        type: 'n',
+        expect: '<div>\n  <spann>test</spann>\n</div>',
+      },
     ]
-    await run(testCases, { speed: slowSpeed })
+    await run(testCases, { speed: slowSpeed, timeout: slowTimeout })
   })
 
   test('nested div tags', async () => {
@@ -138,7 +142,6 @@ suite('Auto Rename Tag', () => {
         input: '<div|>\n  <div>test</div>\n</div>',
         type: '{backspace}{backspace}{backspace}h3',
         expect: '<h3>\n  <div>test</div>\n</h3>',
-        skip: true,
       },
       {
         input: '<div|>\n  <div>test</div>\n</div>',
@@ -147,7 +150,7 @@ suite('Auto Rename Tag', () => {
         skip: true,
       },
     ]
-    await run(testCases)
+    await run(testCases, { speed: slowSpeed })
   })
 
   test('dashed tag', async () => {
@@ -393,6 +396,21 @@ suite('Auto Rename Tag', () => {
         expect: `<divv>
   <div></div>
 </divv>`,
+      },
+    ]
+    await run(testCases)
+  })
+
+  test('bug 4', async () => {
+    const testCases: TestCase[] = [
+      {
+        input: `<div>
+  <div><|
+</div>`,
+        type: '/',
+        expect: `<div>
+  <div></
+</div>`,
       },
     ]
     await run(testCases)

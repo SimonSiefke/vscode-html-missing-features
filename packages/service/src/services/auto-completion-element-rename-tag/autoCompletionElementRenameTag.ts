@@ -1,4 +1,4 @@
-import { createScanner, ScannerState } from 'html-parser'
+import { createScanner, ScannerState, TokenType } from 'html-parser'
 
 import { getPreviousOpeningTagName } from '../util/getPreviousOpenTagName'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
@@ -39,7 +39,10 @@ export const doAutoCompletionElementRenameTag: (
     const currentPosition = scanner.stream.position
     scanner.stream.goBackToUntilChar('/')
     scanner.state = ScannerState.AfterOpeningEndTag
-    scanner.scan()
+    const token = scanner.scan()
+    if (token !== TokenType.EndTag) {
+      return undefined
+    }
     const tagName = scanner.getTokenText()
     scanner.stream.goTo(currentPosition - 2)
 
@@ -112,7 +115,11 @@ export const doAutoCompletionElementRenameTag: (
 
 // const text = `<a></b>`
 // doAutoCompletionElementRenameTag(text, 6, [['<!--', '-->']]) //?
-const text = `<divvv>
-  <div></div>
+// const text = `<divvv>
+//   <div></div>
+// </divv>`
+// doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?
+const text = `<divv>
+  <div>test</
 </divv>`
-doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?
+doAutoCompletionElementRenameTag(text, 20, [['<!--', '-->']]) //?

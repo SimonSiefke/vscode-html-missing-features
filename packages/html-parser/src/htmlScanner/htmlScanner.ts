@@ -126,6 +126,8 @@ export function toTokenTypeReadable(tokenType: TokenTypeFast): TokenType {
       return TokenType.DelimiterAssign
     case TokenTypeFast.WhiteSpace:
       return TokenType.WhiteSpace
+    case undefined:
+      return undefined
     default:
       throw new Error(`unknown tokenType "${tokenType}"`)
   }

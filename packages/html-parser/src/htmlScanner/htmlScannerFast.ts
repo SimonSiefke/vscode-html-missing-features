@@ -173,7 +173,7 @@ export function createScannerFast({
         }
         // TODO error
         console.error('error 1111')
-        break
+        return TokenTypeFast.Unknown
       case ScannerStateFast.WithinEndTag:
         if (stream.skipWhitespace()) {
           tokenOffset = stream.position

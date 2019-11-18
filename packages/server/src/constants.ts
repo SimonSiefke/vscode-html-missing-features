@@ -23,14 +23,14 @@ export const constants: Constants = {
       ['<?', '?>'],
     ],
     javascript: [['<!--', '-->']],
-    javascriptreact: [['/*', '*/']],
+    javascriptreact: [['{', '}']],
     razor: [
       ['<!--', '-->'],
       ['@{', '}'],
     ],
     svelte: [['<!--', '-->']],
     typescript: [['<!--', '-->']],
-    typescriptreact: [['/*', '*/']],
+    typescriptreact: [['{', '}']],
     xml: [
       ['<!--', '-->'],
       ['<?', '?>'],

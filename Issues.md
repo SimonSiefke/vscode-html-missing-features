@@ -453,3 +453,15 @@ but is
 rename second closing div tag
 
  -->
+
+<!-- TODO bug
+dont rename when closing tag isn't finished yet
+<button></
+type button
+makes it
+<></
+<b></b>
+<bu></bu>
+<but></but>
+...
+ -->
