@@ -154,6 +154,7 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
     if (beforeVersion !== afterVersion) {
       return
     }
+    console.log(event.contentChanges)
     doAutoCompletionElementRenameTag(api, event.contentChanges)
   })
 }

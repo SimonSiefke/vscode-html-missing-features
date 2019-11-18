@@ -16,36 +16,61 @@ interface Test {
   path: string
   only?: boolean
   skip?: boolean
+  enableExtensions?: boolean
 }
 
 const run = async (test: Test) => {
   try {
-    const testWorkspacePath = test.path.includes('/')
+    const testWorkspaceName = test.path.includes('/')
       ? test.path.split('/')[test.path.split('/').length - 1]
       : test.path
     const workspacePathSrc = path.join(
       extensionRoot,
-      `src/test/${test.path}/${testWorkspacePath}-workspace`
+      `src/test/${test.path}/${testWorkspaceName}-workspace`
     )
     const workspacePathDist = path.join(
       extensionRoot,
-      `dist/test/${test.path}/${testWorkspacePath}-workspace-dist`
+      `dist/test/${test.path}/${testWorkspaceName}-workspace-dist`
     )
     await fs.copy(workspacePathSrc, workspacePathDist)
     const extensionTestsPath = path.join(__dirname, test.path, 'run')
     const vscodeExecutablePath = await downloadAndUnzipVSCode(vscodeVersion)
-    // const cliPath = resolveCliPathFromVSCodeExecutablePath(vscodeExecutablePath)
+    const cliPath = resolveCliPathFromVSCodeExecutablePath(vscodeExecutablePath)
 
-    // cp.spawnSync(cliPath, ['--install-extension', 'SimonSiefke.ddev'], {
-    //   encoding: 'utf-8',
-    //   stdio: 'inherit',
-    // })
+    const hasExtensionSettings = fs.existsSync(
+      path.join(
+        extensionRoot,
+        `src/test/${test.path}/${testWorkspaceName}-workspace/.vscode/extensions.json`
+      )
+    )
+    if (hasExtensionSettings) {
+      const extensions = JSON.parse(
+        fs.readFileSync(
+          path.join(
+            extensionRoot,
+            `src/test/${test.path}/${testWorkspaceName}-workspace/.vscode/extensions.json`
+          ),
+          'utf-8'
+        )
+      ) as { recommendations?: string[] }
+      const recommendations = extensions.recommendations || []
+      for (const recommendation of recommendations) {
+        cp.spawnSync(cliPath, ['--install-extension', recommendation], {
+          encoding: 'utf-8',
+          stdio: 'inherit',
+        })
+      }
+    }
 
+    const launchArgs: string[] = ['--disable-extensions', workspacePathDist]
+    if (test.enableExtensions) {
+      launchArgs.shift()
+    }
     await runTests({
       vscodeExecutablePath,
       extensionDevelopmentPath,
       extensionTestsPath,
-      launchArgs: ['--disable-extensions', workspacePathDist],
+      launchArgs,
     })
   } catch (err) {
     console.error('Failed to run tests')
@@ -65,6 +90,9 @@ const tests: Test[] = [
   },
   {
     path: 'advanced/language-ruby',
+  },
+  {
+    path: 'advanced/language-svelte',
   },
   {
     path: 'advanced/language-xml',

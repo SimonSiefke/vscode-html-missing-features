@@ -28,6 +28,23 @@ test('language javascriptreact', async () => {
       type: 'n',
       expect: `const button = <buttonn>{/* </button> */}</buttonn>;`,
     },
+    {
+      input: 'const button = <button|>{/* <button> */}</button>',
+      type: 'n',
+      expect: 'const button = <buttonn>{/* <button> */}</buttonn>',
+    },
+    {
+      input: 'const button = <button>{/* <button|> */}</button>',
+      type: 'n',
+      expect: 'const button = <buttonn>{/* <buttonn> */}</button>',
+      skip: true,
+    },
+    {
+      input: 'const button = <button>{/* <button> */}</button|>',
+      type: 'n',
+      expect: 'const button = <buttonn>{/* <button> */}</buttonn>',
+      skip: true,
+    },
   ]
   await run(testCases, {
     timeout: slowTimeout,

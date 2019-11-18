@@ -22,7 +22,13 @@ export const getNextClosingTagName: (
       // TODO show ui error (Auto Rename Tag does not work for this tag because the matching tag is too far away.)
       throw new Error('probably infinite loop')
     }
-    scanner.stream.advanceUntilEitherChar(['<', '>'], matchingTagPairs)
+    const hasFoundChar = scanner.stream.advanceUntilEitherChar(
+      ['<', '>'],
+      matchingTagPairs
+    )
+    if (!hasFoundChar) {
+      return undefined
+    }
     const char = scanner.stream.peekRight() //?
     if (!['<', '>'].includes(char)) {
       return undefined
@@ -100,6 +106,6 @@ export const getNextClosingTagName: (
   }
 }
 
-const text = `const button = <button> {/* </button> */}</button>;`
+const text = `const button = <button> {/* <button> */}</button>;`
 
-getNextClosingTagName(createScanner(text), 23, [['/*', '*/']]) //?
+getNextClosingTagName(createScanner(text), 38, [['/*', '*/']]) //?

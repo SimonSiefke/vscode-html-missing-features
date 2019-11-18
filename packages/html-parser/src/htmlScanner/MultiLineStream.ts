@@ -112,13 +112,24 @@ export class MultiLineStream {
   public advanceUntilEitherChar(
     chars: string[],
     matchingTagPairs: [string, string][]
-  ): void {
+  ): boolean {
     while (this.position < this.source.length) {
       const sourceChar = this.source[this.position]
-      outerForLoop: for (const matchingTagPair of matchingTagPairs) {
+      // don't go outside of matching tag pair, e.g. don't go past '-->' in '<!-- <but|ton> --> '
+      outerForLoop1: for (const matchingTagPair of matchingTagPairs) {
+        console.log(matchingTagPair)
+        for (let j = 0; j < matchingTagPair[1].length; j++) {
+          if (matchingTagPair[1][j] !== this.source[this.position + j]) {
+            continue outerForLoop1
+          }
+        }
+        return false
+      }
+      // skip matching tag pairs, e.g. skip '<!-- </button> -->' in '<button><!-- </button> --></button>'
+      outerForLoop2: for (const matchingTagPair of matchingTagPairs) {
         for (let i = 0; i < matchingTagPair[0].length; i++) {
           if (matchingTagPair[0][i] !== this.source[this.position + i]) {
-            continue outerForLoop
+            continue outerForLoop2
           }
         }
         this.advanceUntilChars(matchingTagPair[1])
@@ -126,10 +137,11 @@ export class MultiLineStream {
         return this.advanceUntilEitherChar(chars, matchingTagPairs)
       }
       if (chars.includes(sourceChar)) {
-        return
+        return true
       }
       this.position++
     }
+    return false
     // this.position--
   }
 

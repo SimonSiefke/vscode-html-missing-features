@@ -103,7 +103,8 @@ export const doAutoCompletionElementRenameTag: (
 }
 
 // TODO add to tests
-const text = `<divvvv><!-- </div> --> </div>`
-doAutoCompletionElementRenameTag(text, 2, [['<!--', '-->']]) //?
+const text = `const button = <button> {/* <buttonn> */}</button>`
+// const text = `<divvvv><!-- </div> --> </div>`
+doAutoCompletionElementRenameTag(text, 33, [['/*', '*/']]) //?
 // doAutoCompletionElementRenameTag('<input></dov>', 10) //?
 // createDoAutoRenameTagCompletion('', 5) //?

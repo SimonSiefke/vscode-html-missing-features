@@ -561,7 +561,9 @@ suite('Auto Rename Tag', () => {
 `,
       },
     ]
-    await run(testCases)
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
   })
 
   test.skip('language typescript', async () => {
