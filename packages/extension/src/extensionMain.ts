@@ -19,9 +19,9 @@ export const activate: (
     utils,
   }
   localPluginAutoCompletionElementRenameTag(api)
-  localPluginAutoCompletionElementAutoClose(api)
-  localPluginAutoCompletionElementSelfClosing(api)
-  localPluginAutoCompletionInsertQuotesAfterEqualSign(api)
+  // localPluginAutoCompletionElementAutoClose(api)
+  // localPluginAutoCompletionElementSelfClosing(api)
+  // localPluginAutoCompletionInsertQuotesAfterEqualSign(api)
   localPluginWrapSelectionWithTag(api)
   // localPluginHighlightElementMatchingTag(api)
 
