@@ -640,7 +640,7 @@ suite('Auto Rename Tag', () => {
     await run(testCases)
   })
 
-  test.only('multiple cursors', async () => {
+  test('multiple cursors', async () => {
     const testCases: TestCase[] = [
       {
         input: `<h1|></h1>
