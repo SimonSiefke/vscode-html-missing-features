@@ -57,9 +57,35 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
         `missing matching tag pairs for language id ${document.languageId}`
       )
     }
-    const relevantChanges = changes.filter(isRelevantChange)
+    const relevantChanges = changes
+      .filter(isRelevantChange)
+      .sort((a, b) => a.rangeOffset - b.rangeOffset)
     const text = document.getText()
-    const offsets = relevantChanges.map(change => change.rangeOffset)
+    /**
+     * actual cursor offset depends on the inserted text, e.g.
+     * <h1|></h1>
+     * <h2|></h2>
+     * <h3|></h3>
+     * <h4|></h4>
+     * <h5|></h5>
+     * <h6|></h6>
+     * when typing "i" it becomes
+     * <h1i></h1>
+     * <h2i></h2>
+     * <h3i></h3>
+     * <h4i></h4>
+     * <h5i></h5>
+     * <h6i></h6>
+     * the rangeOffsets are [3, 13, 23, 33, 43, 53], however because "i" was inserted
+     * the actual cursor offsets are now [3, 14, 25, 36, 47, 58]
+     *
+     */
+    const offsets = []
+    let totalInserted = 0
+    for (const change of relevantChanges) {
+      offsets.push(totalInserted + change.rangeOffset)
+      totalInserted += change.text.length - change.rangeLength
+    }
     const results = offsets.map(offset =>
       doAutoCompletionElementRenameTag(text, offset, matchingTagPairs)
     )

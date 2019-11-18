@@ -639,4 +639,62 @@ suite('Auto Rename Tag', () => {
     ]
     await run(testCases)
   })
+
+  test.only('multiple cursors', async () => {
+    const testCases: TestCase[] = [
+      {
+        input: `<h1|></h1>
+<h2|></h2>
+<h3|></h3>
+<h4|></h4>
+<h5|></h5>
+<h6|></h6>`,
+        type: 'i',
+        expect: `<h1i></h1i>
+<h2i></h2i>
+<h3i></h3i>
+<h4i></h4i>
+<h5i></h5i>
+<h6i></h6i>`,
+      },
+      {
+        input: `<h1></h1|>
+<h2></h2|>
+<h3></h3|>
+<h4></h4|>
+<h5></h5|>
+<h6></h6|>`,
+        type: 'i',
+        expect: `<h1i></h1i>
+<h2i></h2i>
+<h3i></h3i>
+<h4i></h4i>
+<h5i></h5i>
+<h6i></h6i>`,
+      },
+      {
+        input: `<h1|></h1>
+<h2|></h2>
+<h3|></h3>
+<h4|></h4>
+<h5|></h5>
+<h6|></h6>`,
+        type: '{backspace}',
+        expect: `<h></h>
+<h></h>
+<h></h>
+<h></h>
+<h></h>
+<h></h>`,
+      },
+      {
+        input: `<a|a|a|></aaa>`,
+        type: 'b',
+        expect: `<ababab></ababab>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
 })

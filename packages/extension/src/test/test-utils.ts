@@ -75,17 +75,19 @@ async function typeLiteral(text: string, undoStops = false): Promise<void> {
 }
 
 async function typeDelete(times: number = 1): Promise<void> {
-  const offset = vscode.window.activeTextEditor.document.offsetAt(
-    vscode.window.activeTextEditor.selection.active
+  const offsets = vscode.window.activeTextEditor.selections.map(selection =>
+    vscode.window.activeTextEditor.document.offsetAt(selection.active)
   )
   await new Promise(async resolve => {
     await vscode.window.activeTextEditor.edit(editBuilder => {
-      editBuilder.delete(
-        new vscode.Range(
-          vscode.window.activeTextEditor.document.positionAt(offset - times),
-          vscode.window.activeTextEditor.document.positionAt(offset)
+      for (const offset of offsets) {
+        editBuilder.delete(
+          new vscode.Range(
+            vscode.window.activeTextEditor.document.positionAt(offset - times),
+            vscode.window.activeTextEditor.document.positionAt(offset)
+          )
         )
-      )
+      }
     })
     resolve()
   })
