@@ -36,6 +36,7 @@ export const getPreviousOpeningTagName: (
       return undefined
     }
     if (char === '>') {
+      // probably not necessary anymore
       // skip comment
       if (scanner.stream.previousChars(3) === '-->') {
         scanner.stream.goBackToUntilChars('<!--')
@@ -92,12 +93,12 @@ export const getPreviousOpeningTagName: (
       continue
     }
     // pop closing tags from the tags
-    // if (stack.length && !isSelfClosingTag(tokenText)) {
-    //   if (stack.pop() !== tokenText) {
-    //     console.error('no')
-    //   }
-    //   continue
-    // }
+    if (stack.length) {
+      if (stack.pop() !== tokenText) {
+        console.error('no')
+      }
+      continue
+    }
     parentTagName = tokenText
     if (parentTagName !== undefined) {
       break
@@ -126,5 +127,9 @@ export const getPreviousOpeningTagName: (
 // const text = `<div><!-- </div> --> </dddddddd>`
 // getPreviousOpeningTagName(createScanner(text), 20, [['<!--', '-->']]) //?
 
-const text = `<a></b>`
-getPreviousOpeningTagName(createScanner(text), 3, [['<!--', '-->']]) //?
+// const text = `<a></b>`
+// getPreviousOpeningTagName(createScanner(text), 3, [['<!--', '-->']]) //?
+const text = `<div>
+  <div></div>
+</divv>`
+getPreviousOpeningTagName(createScanner(text), 19, [['<!--', '-->']]) //?

@@ -51,12 +51,7 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
     if (!document) {
       return undefined
     }
-    const matchingTagPairs = constants.matchingTagPairs[document.languageId]
-    if (!matchingTagPairs) {
-      throw new Error(
-        `missing matching tag pairs for language id ${document.languageId}`
-      )
-    }
+    const matchingTagPairs = api.utils.getMatchingTagPairs(document.languageId)
     const relevantChanges = changes
       .filter(isRelevantChange)
       .sort((a, b) => a.rangeOffset - b.rangeOffset)

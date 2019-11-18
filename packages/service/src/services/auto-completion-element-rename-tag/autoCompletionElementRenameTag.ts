@@ -110,5 +110,9 @@ export const doAutoCompletionElementRenameTag: (
 // const text = `<div><!-- </div> --> </dddddddd>`
 // doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?
 
-const text = `<a></b>`
-doAutoCompletionElementRenameTag(text, 6, [['<!--', '-->']]) //?
+// const text = `<a></b>`
+// doAutoCompletionElementRenameTag(text, 6, [['<!--', '-->']]) //?
+const text = `<divvv>
+  <div></div>
+</divv>`
+doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?

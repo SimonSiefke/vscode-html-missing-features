@@ -433,3 +433,23 @@ probably same issue as two above
 
 should be <a>
  -->
+
+<!-- TODO fragments not working
+<div></div>
+remove div from start tag
+should be
+<></>
+but is
+<></d>
+
+
+ -->
+
+<!-- TODO bug rename from closing tag
+<div>
+  <div></div>
+</div>
+
+rename second closing div tag
+
+ -->

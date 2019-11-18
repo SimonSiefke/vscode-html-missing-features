@@ -383,6 +383,21 @@ suite('Auto Rename Tag', () => {
     await run(testCases)
   })
 
+  test('bug 3', async () => {
+    const testCases: TestCase[] = [
+      {
+        input: `<div>
+  <div></div>
+</div|>`,
+        type: 'v',
+        expect: `<divv>
+  <div></div>
+</divv>`,
+      },
+    ]
+    await run(testCases)
+  })
+
   test('type space after bu', async () => {
     const testCases: TestCase[] = [
       {
@@ -481,22 +496,6 @@ suite('Auto Rename Tag', () => {
       <grade>A</grade>
    </student2>
 </class_list>`,
-      },
-    ]
-    await run(testCases)
-  })
-
-  test('language vue', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
       },
     ]
     await run(testCases)

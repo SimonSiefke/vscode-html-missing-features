@@ -22,12 +22,14 @@ export const constants: Constants = {
       ['<!--', '-->'],
       ['<?', '?>'],
     ],
+    javascript: [['<!--', '-->']],
     javascriptreact: [['/*', '*/']],
     razor: [
       ['<!--', '-->'],
       ['@{', '}'],
     ],
     svelte: [['<!--', '-->']],
+    typescript: [['<!--', '-->']],
     typescriptreact: [['/*', '*/']],
     xml: [
       ['<!--', '-->'],
