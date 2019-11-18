@@ -90,7 +90,8 @@ export const findMatchingTags: (
       // scanner.stream.nextChars(20) //?
       const nextClosingTag = getNextClosingTagName(
         scanner,
-        scanner.stream.position
+        scanner.stream.position,
+        [['<!--', '-->']]
       )
       if (!nextClosingTag || nextClosingTag.tagName !== tagName) {
         return {

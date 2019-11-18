@@ -2,14 +2,15 @@ import { Scanner, ScannerState, TokenType, createScanner } from 'html-parser'
 
 export const getNextClosingTagName: (
   scanner: Scanner,
-  initialOffset: number
+  initialOffset: number,
+  matchingTagPairs: [string, string][]
 ) =>
   | {
       tagName: string
       offset: number
       seenRightAngleBracket: boolean
     }
-  | undefined = (scanner, initialOffset) => {
+  | undefined = (scanner, initialOffset, matchingTagPairs) => {
   let offset = initialOffset
   let nextClosingTagName: string | undefined
   let stack: string[] = []
@@ -21,7 +22,7 @@ export const getNextClosingTagName: (
       // TODO show ui error (Auto Rename Tag does not work for this tag because the matching tag is too far away.)
       throw new Error('probably infinite loop')
     }
-    scanner.stream.advanceUntilEitherChar('<', '>')
+    scanner.stream.advanceUntilEitherChar(['<', '>'], matchingTagPairs)
     const char = scanner.stream.peekRight() //?
     if (!['<', '>'].includes(char)) {
       return undefined
@@ -50,27 +51,21 @@ export const getNextClosingTagName: (
         }
       }
 
-      if (scanner.stream.nextChars(4) === '<!--') {
-        scanner.stream.advanceUntilChars('-->')
-        scanner.stream.advance(3)
-        continue
-      } else {
-        scanner.stream.advance(1)
-        scanner.state = ScannerState.AfterOpeningStartTag
-        const token = scanner.scan()
-        if (token !== TokenType.StartTag) {
-          // console.log(scanner.getTokenText());
-          // console.log("no start tag");
-          return undefined
-        }
-        const tokenText = scanner.getTokenText()
-        // if ('todo 'isSelfClosingTag(tokenText)) {
-        //   continue
-        // }
-        // push opening tag onto the stack
-        stack.push(tokenText)
-        continue
+      scanner.stream.advance(1)
+      scanner.state = ScannerState.AfterOpeningStartTag
+      const token = scanner.scan()
+      if (token !== TokenType.StartTag) {
+        // console.log(scanner.getTokenText());
+        // console.log("no start tag");
+        return undefined
       }
+      const tokenText = scanner.getTokenText()
+      // if ('todo 'isSelfClosingTag(tokenText)) {
+      //   continue
+      // }
+      // push opening tag onto the stack
+      stack.push(tokenText)
+      continue
     } else {
       if (scanner.stream.peekRight(1) === '') {
         // console.log("end");
@@ -105,6 +100,12 @@ export const getNextClosingTagName: (
   }
 }
 
-const text = `<a><img /></a>`
+const text = `<divv class = 'bg-warning'>
+  <!-- </div> -->
+  <?php displayErrors($errors); ?>
+</div>`
 
-getNextClosingTagName(createScanner(text), 0) //?
+getNextClosingTagName(createScanner(text), 2, [
+  ['<!--', '-->'],
+  ['<?php', '?>'],
+]) //?

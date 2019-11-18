@@ -9,16 +9,18 @@ export interface Constants {
 export const constants: Constants = {
   quote: '"',
   matchingTagPairs: {
-    erb: [['<%=', '%>']],
+    css: [['/*', '*/']],
+    ruby: [['<%=', '%>']],
     html: [['<!--', '-->']],
     markdown: [
       ['<!--', '-->'],
       ['```', '```'],
+      ['<?php', '?>'],
     ],
     plaintext: [['<!--', '-->']],
     php: [
       ['<!--', '-->'],
-      ['<?', '?>'],
+      ['<?php', '?>'],
     ],
     javascriptreact: [['{/*', '*/}']],
     razor: [

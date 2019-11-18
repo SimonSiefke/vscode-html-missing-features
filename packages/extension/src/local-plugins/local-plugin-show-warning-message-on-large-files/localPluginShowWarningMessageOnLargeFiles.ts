@@ -14,9 +14,9 @@ const showWarningIfDocumentIsTooLarge: () => Promise<void> = async () => {
     return
   }
   const document = vscode.window.activeTextEditor.document
-  if (!constants.allowedLanguageIds.includes(document.languageId)) {
-    return
-  }
+  // if (!constants.allowedLanguageIds.includes(document.languageId)) {
+  //   return
+  // }
   if (hasShownWarningMessageForDocument(document)) {
     return
   }

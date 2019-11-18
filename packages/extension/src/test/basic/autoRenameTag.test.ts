@@ -5,6 +5,7 @@ import {
   run,
   TestCase,
   ciSlowNess,
+  slowTimeout,
 } from '../test-utils'
 
 // const slowSpeed = 70
@@ -346,6 +347,7 @@ suite('Auto Rename Tag', () => {
     ]
     await run(testCases, {
       speed: slowSpeed,
+      timeout: slowTimeout,
     })
   })
 
@@ -473,7 +475,9 @@ suite('Auto Rename Tag', () => {
         expect: `<button2>this is a button</button2>`,
       },
     ]
-    await run(testCases)
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
   })
 
   test.skip('language php', async () => {

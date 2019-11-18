@@ -14,9 +14,9 @@ export const utils: Utils = {
     ) {
       return true
     }
-    if (!constants.allowedLanguageIds.includes(document.languageId)) {
-      return true
-    }
+    // if (!constants.allowedLanguageIds.includes(document.languageId)) {
+    //   return true
+    // }
     if (document.getText().length > constants.maxAllowedChars) {
       return true
     }

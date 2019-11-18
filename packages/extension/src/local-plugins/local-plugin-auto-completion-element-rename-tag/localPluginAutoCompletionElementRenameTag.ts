@@ -108,7 +108,6 @@ const doAutoCompletionElementRenameTag: (
     activeTextEditor.document,
     changes
   )
-  console.log('results' + JSON.stringify(results))
   if (cancelTokenSource.token.isCancellationRequested) {
     return
   }

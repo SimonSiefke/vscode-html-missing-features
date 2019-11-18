@@ -109,11 +109,25 @@ export class MultiLineStream {
     // console.log('plus')
     this.position++
   }
-  public advanceUntilEitherChar(...chars: string[]): void {
-    while (
-      this.position < this.source.length &&
-      !chars.includes(this.source[this.position])
-    ) {
+  public advanceUntilEitherChar(
+    chars: string[],
+    matchingTagPairs: [string, string][]
+  ): void {
+    while (this.position < this.source.length) {
+      const sourceChar = this.source[this.position]
+      outerForLoop: for (const matchingTagPair of matchingTagPairs) {
+        for (let i = 0; i < matchingTagPair[0].length; i++) {
+          if (matchingTagPair[0][i] !== this.source[this.position + i]) {
+            continue outerForLoop
+          }
+        }
+        this.advanceUntilChars(matchingTagPair[1])
+        this.advance(matchingTagPair[1].length)
+        this.advanceUntilEitherChar(chars, matchingTagPairs)
+      }
+      if (chars.includes(sourceChar)) {
+        return
+      }
       this.position++
     }
     // this.position--

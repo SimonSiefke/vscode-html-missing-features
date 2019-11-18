@@ -38,7 +38,9 @@ export const doAutoCompletionElementClose: (
       return undefined
     }
     const previousOpeningTagName = getPreviousOpeningTagName(scanner, before)
-    const nextClosingTagName = getNextClosingTagName(scanner, after)
+    const nextClosingTagName = getNextClosingTagName(scanner, after, [
+      ['<!--', '-->'],
+    ])
     if (!previousOpeningTagName) {
       return undefined
     }

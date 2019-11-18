@@ -1,13 +1,10 @@
 import * as path from 'path'
 import * as Mocha from 'mocha'
+import * as fs from 'fs'
 
-export const createRunner: ({
-  fileName,
-  dirname,
-}: {
-  fileName: string
+export const createRunner: (
   dirname: string
-}) => () => Promise<void> = ({ fileName, dirname }) => () => {
+) => () => Promise<void> = dirname => () => {
   const mocha = new Mocha({
     ui: 'tdd',
     timeout: 1000000,
@@ -16,7 +13,12 @@ export const createRunner: ({
   mocha.bail(true)
 
   return new Promise((resolve, reject) => {
-    mocha.addFile(path.join(dirname, fileName))
+    const fileNames = fs
+      .readdirSync(dirname)
+      .filter(fileName => fileName.endsWith('.test.js'))
+    for (const fileName of fileNames) {
+      mocha.addFile(path.join(dirname, fileName))
+    }
     try {
       mocha.run(failures => {
         if (failures > 0) {

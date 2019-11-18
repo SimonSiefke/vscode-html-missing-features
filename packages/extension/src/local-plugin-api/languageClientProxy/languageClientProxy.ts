@@ -5,7 +5,6 @@ import {
   TransportKind,
   LanguageClient,
   RequestType,
-  ErrorCodes,
   ServerOptions,
   DocumentFilter,
 } from 'vscode-languageclient'
@@ -21,23 +20,18 @@ export interface LanguageClientProxy {
   readonly sendRequest: VslSendRequest
 }
 
-const documentSelector: DocumentFilter[] = constants.allowedLanguageIds.map(
-  languageId => ({
-    language: languageId,
-    scheme: 'file',
-  })
-)
-
 const clientOptions: LanguageClientOptions = {
-  documentSelector,
+  documentSelector: [
+    {
+      scheme: 'file',
+    },
+  ],
 }
 
 export const createLanguageClientProxy = async (
   context: vscode.ExtensionContext
 ): Promise<LanguageClientProxy> => {
   const serverModule = context.asAbsolutePath('../server/dist/serverMain.js')
-  // If the extension is launch in debug mode the debug server options are use
-  // Otherwise the run options are used
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
     debug: {
