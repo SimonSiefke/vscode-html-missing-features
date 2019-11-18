@@ -19,20 +19,20 @@ interface Test {
 }
 
 const run = async (test: Test) => {
-  const testWorkspacePath = test.path.includes('/')
-    ? test.path.split('/')[test.path.split('/').length - 1]
-    : test.path
-  const workspacePathSrc = path.join(
-    extensionRoot,
-    `src/test/${test.path}/${testWorkspacePath}-workspace`
-  )
-  const workspacePathDist = path.join(
-    extensionRoot,
-    `dist/test/${test.path}/${testWorkspacePath}-workspace-dist`
-  )
-  await fs.copy(workspacePathSrc, workspacePathDist)
-  const extensionTestsPath = path.join(__dirname, test.path, 'run')
   try {
+    const testWorkspacePath = test.path.includes('/')
+      ? test.path.split('/')[test.path.split('/').length - 1]
+      : test.path
+    const workspacePathSrc = path.join(
+      extensionRoot,
+      `src/test/${test.path}/${testWorkspacePath}-workspace`
+    )
+    const workspacePathDist = path.join(
+      extensionRoot,
+      `dist/test/${test.path}/${testWorkspacePath}-workspace-dist`
+    )
+    await fs.copy(workspacePathSrc, workspacePathDist)
+    const extensionTestsPath = path.join(__dirname, test.path, 'run')
     const vscodeExecutablePath = await downloadAndUnzipVSCode(vscodeVersion)
     // const cliPath = resolveCliPathFromVSCodeExecutablePath(vscodeExecutablePath)
 
