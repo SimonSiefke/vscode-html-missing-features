@@ -71,7 +71,9 @@ suite('Auto Rename Tag', () => {
         expect: '<sdiv>test</sdiv>',
       },
     ]
-    await run(testCases)
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
   })
 
   test('tag with class', async () => {

@@ -95,6 +95,9 @@ const tests: Test[] = [
     path: 'advanced/language-svelte',
   },
   {
+    path: 'advanced/language-typescriptreact',
+  },
+  {
     path: 'advanced/language-xml',
   },
 ]

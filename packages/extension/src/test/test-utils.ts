@@ -164,7 +164,9 @@ export async function run(
       }
       const input = testCase.input.replace(/\|/g, '')
       await setText(input)
-      setCursorPositions(cursorOffsets)
+      if (cursorOffsets.length > 0) {
+        setCursorPositions(cursorOffsets)
+      }
     }
     if (testCase.selection) {
       const [start, end] = testCase.selection
