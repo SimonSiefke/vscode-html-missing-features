@@ -51,7 +51,6 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
     if (!document) {
       return undefined
     }
-    const matchingTagPairs = api.utils.getMatchingTagPairs(document.languageId)
     const relevantChanges = changes
       .filter(isRelevantChange)
       .sort((a, b) => a.rangeOffset - b.rangeOffset)
@@ -82,7 +81,7 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
       totalInserted += change.text.length - change.rangeLength
     }
     const results = offsets.map(offset =>
-      doAutoCompletionElementRenameTag(text, offset, matchingTagPairs)
+      doAutoCompletionElementRenameTag(text, offset, document.languageId)
     )
     return unique(results.filter(Boolean)) as Result[]
   })

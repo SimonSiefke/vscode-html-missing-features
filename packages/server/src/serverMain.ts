@@ -9,12 +9,8 @@ import { TextDocument } from 'vscode-languageserver-textdocument'
 import { createConnectionProxy } from './remote-plugin-api/connectionProxy/connectionProxy'
 import { createDocumentsProxy } from './remote-plugin-api/documentsProxy/documentsProxy'
 import { RemotePluginApi } from './remote-plugin-api/remotePluginApi'
-import { remotePluginAutoCompletionElementAutoClose } from './remote-plugins/remote-plugin-auto-completion-element-auto-close/remotePluginAutoCompletionElementAutoClose'
-import { remotePluginAutoCompletionElementSelfClosing } from './remote-plugins/remote-plugin-auto-completion-element-self-closing/remotePluginAutoCompletionElementSelfClosing'
-import { remotePluginAutoCompletionInsertQuotesAfterEqualSign } from './remote-plugins/remote-plugin-auto-completion-insert-quotes-after-equal-sign/remotePluginAutoCompletionInsertQuotesAfterEqualSign'
-import { remotePluginCommandWrapSelectionWithTag } from './remote-plugins/remote-plugin-command-wrap-selection-with-tag/remotePluginCommandWrapSelectionWithTag'
 import { remotePluginAutoCompletionElementRenameTag } from './remote-plugins/remote-plugin-auto-completion-element-rename-tag/remotePluginAutoCompletionElementRenameTag'
-import { utils } from './remote-plugin-api/utils/utils'
+import { remotePluginAutoCompletionInsertQuotesAfterEqualSign } from './remote-plugins/remote-plugin-auto-completion-insert-quotes-after-equal-sign/remotePluginAutoCompletionInsertQuotesAfterEqualSign'
 
 const connection: IConnection = createConnection()
 
@@ -50,13 +46,12 @@ connection.onInitialized(async () => {
   const api: RemotePluginApi = {
     connectionProxy: createConnectionProxy(connection),
     documentsProxy: createDocumentsProxy(documents),
-    utils,
   }
-  remotePluginAutoCompletionElementAutoClose(api)
-  remotePluginAutoCompletionElementSelfClosing(api)
+  // remotePluginAutoCompletionElementAutoClose(api)
+  // remotePluginAutoCompletionElementSelfClosing(api)
   remotePluginAutoCompletionInsertQuotesAfterEqualSign(api)
   // remotePluginHighlightElementMatchingTag(api)
-  remotePluginCommandWrapSelectionWithTag(api)
+  // remotePluginCommandWrapSelectionWithTag(api)
   remotePluginAutoCompletionElementRenameTag(api)
 })
 

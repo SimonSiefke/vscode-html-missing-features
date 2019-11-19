@@ -1,27 +1,30 @@
 import { createScanner, Scanner, ScannerState, TokenType } from 'html-parser'
+import { getMatchingTagPairs } from './getMatchingTagPairs'
+import { isSelfClosingTag } from './isSelfClosingTag'
 
 export const getPreviousOpeningTagName: (
   scanner: Scanner,
   initialOffset: number,
-  matchingTagPairs: [string, string][]
+  languageId: string
 ) =>
   | {
       tagName: string
       offset: number
       seenRightAngleBracket: boolean
     }
-  | undefined = (scanner, initialOffset, matchingTagPairs) => {
-  let offset = initialOffset + 2
+  | undefined = (scanner, initialOffset, languageId) => {
+  const matchingTagPairs = getMatchingTagPairs(languageId)
+  let offset = initialOffset + 1
   let parentTagName: string | undefined
   let stack: string[] = []
   let seenRightAngleBracket = false
   let selfClosing = false
   let i = 0
-  do {
+  outer: do {
     if (i++ > 1000) {
       throw new Error('probably infinite loop')
     }
-    scanner.stream.goTo(offset - 3)
+    scanner.stream.goTo(offset - 2)
     // scanner.stream.previousChars(20) //?
 
     const hasFoundChar = scanner.stream.goBackUntilEitherChar(
@@ -92,13 +95,21 @@ export const getPreviousOpeningTagName: (
       selfClosing = false
       continue
     }
-    // pop closing tags from the tags
-    if (stack.length) {
-      if (stack.pop() !== tokenText) {
-        console.error('no')
-      }
+    if (isSelfClosingTag(languageId, tokenText)) {
       continue
     }
+    // pop closing tags from the tags
+    inner: while (stack.length) {
+      let top = stack.pop()
+      if (top === tokenText) {
+        continue outer
+      }
+      if (isSelfClosingTag(languageId, top)) {
+        continue inner
+      }
+      return undefined
+    }
+
     parentTagName = tokenText
     if (parentTagName !== undefined) {
       break
@@ -129,7 +140,9 @@ export const getPreviousOpeningTagName: (
 
 // const text = `<a></b>`
 // getPreviousOpeningTagName(createScanner(text), 3, [['<!--', '-->']]) //?
-const text = `<div>
-  <div></div>
-</divv>`
-getPreviousOpeningTagName(createScanner(text), 19, [['<!--', '-->']]) //?
+// const text = `<head>
+//   <link>
+// </headd>`
+// getPreviousOpeningTagName(createScanner(text), 15, 'html') //?
+const text = `<head><link></headd>`
+getPreviousOpeningTagName(createScanner(text), 12, 'html') //?

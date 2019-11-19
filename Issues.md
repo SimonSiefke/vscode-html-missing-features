@@ -497,3 +497,77 @@ but becomes
 
 closing quote is appended to closing button tag
  -->
+
+<!-- TODO bug when html inside style
+
+<html>
+<style>
+/**
+ * <table>
+ */
+</style>
+</html>
+
+renaming html should rename html
+ -->
+
+<!-- TODO bug self closing tag
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+  <title>HTML</title>
+</head>
+
+rename head and test that corresponding head tag is renamed (might be different for jsx/vue)
+ -->
+
+<!-- TODO self closing tag bug
+<head>
+ <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-REC" rel="stylesheet" type="text/css">
+ </head>
+
+renaming closing head tag renames the link
+
+ -->
+
+<!-- TODO support for partially self closing tags
+<div>
+  <p>hello
+  <p>world
+</div>
+should rename div
+
+and
+<div>
+  <p>hello
+  <p>world</p>
+</div>
+
+should also rename div, renaming first p should do nothing
+ -->
+
+<!-- TODO advanced algorithm that iterates alternating between start and end, e.g.
+
+<html>
+<head>
+  <link>
+</head>
+</html>
+
+normally renaming link to meta would result in
+<html>
+<head>
+  <meta>
+</meta>
+</html>
+
+the new algorithm would check the previous tag of meta and the next tag of meta
+
+
+ignore top part. another idea: only rename when tag matches exactly, e.g.
+
+when renaming met to meta it would require to find a closing met tag which is renamed to meta but a closing head tag would not be renamed
+
+
+
+ -->

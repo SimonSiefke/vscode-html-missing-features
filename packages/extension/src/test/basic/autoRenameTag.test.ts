@@ -582,4 +582,23 @@ suite('Auto Rename Tag', () => {
       speed: slowSpeed,
     })
   })
+
+  test('self closing tags', async () => {
+    const testCases: TestCase[] = [
+      {
+        input: `<head|><link></head>`,
+        type: 'd',
+        expect: '<headd><link></headd>',
+      },
+      {
+        input: `<head><link></head|>`,
+        type: 'd',
+        expect: '<headd><link></headd>',
+      },
+    ]
+    await run(testCases, {
+      speed: slowSpeed,
+      timeout: slowTimeout,
+    })
+  })
 })

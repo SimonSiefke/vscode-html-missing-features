@@ -2,6 +2,7 @@ import { createScanner, ScannerState, TokenType } from 'html-parser'
 
 import { getPreviousOpeningTagName } from '../util/getPreviousOpenTagName'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
+import { getMatchingTagPairs } from '../util/getMatchingTagPairs'
 
 // TODO: bug inside comment
 //
@@ -13,14 +14,15 @@ import { getNextClosingTagName } from '../util/getNextClosingTagName'
 export const doAutoCompletionElementRenameTag: (
   text: string,
   offset: number,
-  matchingTagPairs: [string, string][]
+  languageId: string
 ) =>
   | {
       startOffset: number
       endOffset: number
       word: string
     }
-  | undefined = (text, offset, matchingTagPairs) => {
+  | undefined = (text, offset, languageId) => {
+  const matchingTagPairs = getMatchingTagPairs(languageId)
   const scanner = createScanner(text, { initialOffset: offset })
   scanner.stream.goBack(1)
   scanner.stream.goBackWhileRegex(/[^\s<>\\]/)
@@ -49,7 +51,7 @@ export const doAutoCompletionElementRenameTag: (
     const parent = getPreviousOpeningTagName(
       scanner,
       scanner.stream.position,
-      matchingTagPairs
+      languageId
     )
     if (!parent) {
       return undefined
@@ -86,7 +88,7 @@ export const doAutoCompletionElementRenameTag: (
     const nextClosingTag = getNextClosingTagName(
       scanner,
       scanner.stream.position,
-      matchingTagPairs
+      languageId
     )
     if (!nextClosingTag) {
       return undefined
@@ -129,11 +131,14 @@ export const doAutoCompletionElementRenameTag: (
 // <circle cx="" />
 // </svg>`
 // doAutoCompletionElementRenameTag(text, 3, [['<!--', '-->']]) //?
-const text = `<aa target="_blank" href="blabla.com">
-    Bla Bla
-</a>`
-doAutoCompletionElementRenameTag(text, 2, [
-  ['{', '}'],
-  ["'", "'"],
-  ['"', "'"],
-]) //?
+// const text = `<aa target="_blank" href="blabla.com">
+//     Bla Bla
+// </a>`
+// doAutoCompletionElementRenameTag(text, 2, 'html') //?
+
+// const text = `<head>
+//   <link>
+// </headd>`
+// doAutoCompletionElementRenameTag(text, 21, 'html') //?
+const text = `<head><link></headd>`
+doAutoCompletionElementRenameTag(text, 17, 'html') //?

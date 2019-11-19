@@ -1,16 +1,19 @@
 import { Scanner, ScannerState, TokenType, createScanner } from 'html-parser'
+import { getMatchingTagPairs } from './getMatchingTagPairs'
+import { isSelfClosingTag } from './isSelfClosingTag'
 
 export const getNextClosingTagName: (
   scanner: Scanner,
   initialOffset: number,
-  matchingTagPairs: [string, string][]
+  languageId: string
 ) =>
   | {
       tagName: string
       offset: number
       seenRightAngleBracket: boolean
     }
-  | undefined = (scanner, initialOffset, matchingTagPairs) => {
+  | undefined = (scanner, initialOffset, languageId) => {
+  const matchingTagPairs = getMatchingTagPairs(languageId)
   let offset = initialOffset
   let nextClosingTagName: string | undefined
   let stack: string[] = []
@@ -18,7 +21,7 @@ export const getNextClosingTagName: (
   let i = 0
   scanner.stream.goTo(offset)
   do {
-    if (i++ > 1000) {
+    if (i++ > 10000000) {
       // TODO show ui error (Auto Rename Tag does not work for this tag because the matching tag is too far away.)
       throw new Error('probably infinite loop')
     }
@@ -45,7 +48,11 @@ export const getNextClosingTagName: (
         }
         const tokenText = scanner.getTokenText()
         if (stack.length) {
-          if (stack.pop() !== tokenText) {
+          const top = stack.pop()
+          if (top !== tokenText) {
+            console.log(scanner.stream.position)
+            console.log(top)
+            console.log(tokenText)
             console.error('no')
           }
           continue
@@ -65,9 +72,10 @@ export const getNextClosingTagName: (
         return undefined
       }
       const tokenText = scanner.getTokenText()
-      // if ('todo 'isSelfClosingTag(tokenText)) {
-      //   continue
-      // }
+      if (isSelfClosingTag(languageId, tokenText)) {
+        continue
+      }
+      // console.log('push' + tokenText)
       // push opening tag onto the stack
       stack.push(tokenText)
       continue
@@ -82,16 +90,14 @@ export const getNextClosingTagName: (
         return undefined
       }
       if (scanner.stream.peekLeft(1) === '/') {
-        if (scanner.stream.peekLeft(1) === '/') {
-          if (stack.length === 0) {
-            // console.log("return undefined 2");
-            return undefined
-          }
-          stack.pop()
-          // console.log("pop");
-          scanner.stream.advance(1)
-          continue
+        if (stack.length === 0) {
+          // console.log("return undefined 2");
+          return undefined
         }
+        stack.pop()
+        // console.log("pop");
+        scanner.stream.advance(1)
+        continue
       }
       // console.log("advance 1");
       scanner.stream.advance(1)
@@ -108,7 +114,4 @@ export const getNextClosingTagName: (
 const text = `<svg2 >
 <circle cx="" />
 </svg>`
-getNextClosingTagName(createScanner(text), 8, [
-  ['<!--', '-->'],
-  ['"', '"'],
-]) //?
+getNextClosingTagName(createScanner(text), 8, 'html') //?

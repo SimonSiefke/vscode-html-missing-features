@@ -1,17 +1,3 @@
-export interface Utils {
-  readonly shouldHaveNewLine: (tagName: string) => boolean
-  readonly isSelfClosingTag: (tagName: string) => boolean
-  readonly getMatchingTagPairs: (languageId: string) => [string, string][]
-}
-
-const tagsThatShouldHaveNewLine: string[] = []
-const shouldHaveNewLine: Utils['shouldHaveNewLine'] = tagName =>
-  tagsThatShouldHaveNewLine.includes(tagName)
-
-const tagsThatAreSelfClosing: string[] = []
-const isSelfClosingTag: Utils['isSelfClosingTag'] = tagName =>
-  tagsThatAreSelfClosing.includes(tagName)
-
 const matchingTagPairs: { [languageId: string]: [string, string][] } = {
   css: [
     ['/*', '*/'],
@@ -28,6 +14,8 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['<!--', '-->'],
     ['"', '"'],
     ["'", "'"],
+    ['<style', '</style>'],
+    ['<script', '</script'],
     ['<%=', '%>'], // support for html-webpack-plugin
   ],
   markdown: [
@@ -104,12 +92,6 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['{{', '}}'],
     ['{%', '%}'],
   ],
-  xml: [
-    ['<!--', '-->'],
-    ['"', '"'],
-    ["'", "'"],
-    ['<?', '?>'],
-  ],
   volt: [
     ['{#', '#}'],
     ['{%', '%}'],
@@ -121,12 +103,15 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ["'", "'"],
     ['{{', '}}'],
   ],
+  xml: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+    ['<?', '?>'],
+  ],
 }
-const getMatchingTagPairs: Utils['getMatchingTagPairs'] = languageId =>
-  matchingTagPairs[languageId] || matchingTagPairs['html']
 
-export const utils: Utils = {
-  shouldHaveNewLine,
-  isSelfClosingTag,
-  getMatchingTagPairs,
-}
+export const getMatchingTagPairs: (
+  languageId: string
+) => [string, string][] = languageId =>
+  matchingTagPairs[languageId] || matchingTagPairs['html']
