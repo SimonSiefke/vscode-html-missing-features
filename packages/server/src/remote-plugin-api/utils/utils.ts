@@ -37,6 +37,11 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['```', '```'],
     ['<?', '?>'],
   ],
+  nunjucks: [
+    ['{%', '%}'],
+    ['{{', '}}'],
+    ['{#', '#}'],
+  ],
   plaintext: [
     ['<!--', '-->'],
     ['"', '"'],
