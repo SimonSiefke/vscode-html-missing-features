@@ -204,4 +204,4 @@ export const ciSlowNess = 2.7
 
 export const slowSpeed = 4 * ciSlowNess
 
-export const slowTimeout = 100 * ciSlowNess
+export const slowTimeout = 40 * ciSlowNess
