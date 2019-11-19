@@ -56,7 +56,6 @@ test('language markdown', async () => {
 \`\`\`html
 </buttonn>
 \`\`\``,
-      skip: true,
     },
   ]
   await run(testCases, {

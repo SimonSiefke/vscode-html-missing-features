@@ -1,6 +1,12 @@
 import * as vscode from 'vscode'
 import * as path from 'path'
-import { activateExtension, TestCase, run, slowTimeout } from '../../test-utils'
+import {
+  activateExtension,
+  TestCase,
+  run,
+  slowTimeout,
+  slowSpeed,
+} from '../../test-utils'
 
 const getUri: (file: string) => vscode.Uri = file =>
   vscode.Uri.file(
@@ -41,6 +47,13 @@ test('language javascriptreact', async () => {
       input: 'const button = <button>{/* <button> */}</button|>',
       type: 'n',
       expect: 'const button = <buttonn>{/* <button> */}</buttonn>',
+    },
+    {
+      input: 'const buttons = <|><button/><button/></>',
+      type: 'React.Fragment',
+      expect:
+        'const buttons = <React.Fragment><button/><button/></React.Fragment>',
+      speed: slowSpeed,
     },
   ]
   await run(testCases, {

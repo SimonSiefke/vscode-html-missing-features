@@ -32,7 +32,6 @@ suite('Auto Rename Tag', () => {
         input: '<div|>test</div>',
         type: '{backspace}{backspace}{backspace}',
         expect: '<>test</>',
-        skip: true,
       },
       {
         input: '<div|>test</div>',
@@ -48,7 +47,6 @@ suite('Auto Rename Tag', () => {
         input: '<div|>test</div>',
         type: '{backspace}{backspace}{backspace} ',
         expect: '< >test</>',
-        skip: true,
       },
       {
         input: '<div|>test</div>',
@@ -91,8 +89,6 @@ suite('Auto Rename Tag', () => {
         type: '{backspace}{backspace}{backspace}',
         expect: '< class="css">test</>',
         skip: true,
-        // only: true,
-        // speed: 550,
       },
       {
         input: '<div | class="css">test</div>',
@@ -144,10 +140,9 @@ suite('Auto Rename Tag', () => {
         expect: '<h3>\n  <div>test</div>\n</h3>',
       },
       {
-        input: '<div|>\n  <div>test</div>\n</div>',
+        input: '<div>\n  <div>test</div|>\n</div>',
         type: '{backspace}{backspace}{backspace}p',
         expect: '<div>\n  <p>test</p>\n</div>',
-        skip: true,
       },
     ]
     await run(testCases, { speed: slowSpeed })
@@ -192,6 +187,12 @@ suite('Auto Rename Tag', () => {
         input: '<DatenSä|tze></DatenSätze>',
         type: 'ä',
         expect: '<DatenSäätze></DatenSäätze>',
+      },
+      {
+        input: '<a|></a>',
+        type: '|',
+        expect: '<a|></a>',
+        skip: true,
       },
       {
         input: '<你|早></你早>',

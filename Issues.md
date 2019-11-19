@@ -465,3 +465,35 @@ makes it
 <but></but>
 ...
  -->
+
+<!-- TODO bug
+auto rename tag in typescript
+   {
+        input: '<a|></a|>',
+        type: '|',
+        expect: '<a>',
+      },
+
+after "expect" type </a>
+
+should be
+ {
+        input: '<a|></a|>',
+        type: '|',
+        expect: '<a|></a>',
+      },
+
+but becomes
+
+ {
+        input: '<a|></a|>',
+        type: '|',
+        expect: '<a',></a>',
+      },
+ -->
+
+<!-- TODO bug with quotes
+<button class="<button">test</button">
+
+closing quote is appended to closing button tag
+ -->

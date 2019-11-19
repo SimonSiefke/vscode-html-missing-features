@@ -1,5 +1,3 @@
-import { constants } from '../../constants'
-
 export interface Utils {
   readonly shouldHaveNewLine: (tagName: string) => boolean
   readonly isSelfClosingTag: (tagName: string) => boolean
@@ -14,8 +12,57 @@ const tagsThatAreSelfClosing: string[] = []
 const isSelfClosingTag: Utils['isSelfClosingTag'] = tagName =>
   tagsThatAreSelfClosing.includes(tagName)
 
+const matchingTagPairs: { [languageId: string]: [string, string][] } = {
+  css: [['/*', '*/']],
+  ruby: [['<%=', '%>']],
+  html: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+    ['<%=', '%>'], // support for html-webpack-plugin
+  ],
+  markdown: [
+    ['<!--', '-->'],
+    ['```', '```'],
+    ['<?', '?>'],
+  ],
+  plaintext: [['<!--', '-->']],
+  php: [
+    ['<!--', '-->'],
+    ['<?', '?>'],
+  ],
+  javascript: [
+    ['<!--', '-->'],
+    ["'", "'"],
+    ['"', '"'],
+    ['`', '`'],
+  ],
+  javascriptreact: [['{', '}']],
+  razor: [
+    ['<!--', '-->'],
+    ['@{', '}'],
+  ],
+  svelte: [['<!--', '-->']],
+  typescript: [
+    ['<!--', '-->'],
+    ["'", "'"],
+    ['"', '"'],
+    ['`', '`'],
+  ],
+  typescriptreact: [['{', '}']],
+  twig: [
+    ['<!--', '-->'],
+    ['{{', '}}'],
+    ['{%', '%}'],
+  ],
+  xml: [
+    ['<!--', '-->'],
+    ['<?', '?>'],
+  ],
+  vue: [['<!--', '-->']],
+}
 const getMatchingTagPairs: Utils['getMatchingTagPairs'] = languageId =>
-  constants.matchingTagPairs[languageId] || constants.matchingTagPairs['html']
+  matchingTagPairs[languageId] || matchingTagPairs['html']
 
 export const utils: Utils = {
   shouldHaveNewLine,

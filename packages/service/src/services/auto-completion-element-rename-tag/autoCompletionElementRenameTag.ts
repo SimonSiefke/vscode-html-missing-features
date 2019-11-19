@@ -30,7 +30,7 @@ export const doAutoCompletionElementRenameTag: (
   }
   const nextChar = scanner.stream.peekRight(0)
   const atEndTag = nextChar === '/'
-  const atStartTag = /[^\s<>]/.test(nextChar)
+  const atStartTag = /[^\s<]/.test(nextChar)
   if (!atEndTag && !atStartTag) {
     return undefined
   }
@@ -119,7 +119,9 @@ export const doAutoCompletionElementRenameTag: (
 //   <div></div>
 // </divv>`
 // doAutoCompletionElementRenameTag(text, 25, [['<!--', '-->']]) //?
-const text = `<divv>
-  <div>test</
-</divv>`
-doAutoCompletionElementRenameTag(text, 20, [['<!--', '-->']]) //?
+// const text = `<divv>
+//   <div>test</
+// </divv>`
+// doAutoCompletionElementRenameTag(text, 20, [['<!--', '-->']]) //?
+const text = `<>test</l>`
+doAutoCompletionElementRenameTag(text, 1, [['<!--', '-->']]) //?
