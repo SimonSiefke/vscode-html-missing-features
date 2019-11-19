@@ -61,6 +61,7 @@ suite('Auto Rename Tag', () => {
     ]
     await run(testCases, {
       speed: slowSpeed,
+      timeout: slowTimeout,
     })
   })
 

@@ -18,6 +18,7 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['"', '"'],
     ["'", "'"],
   ],
+  ejs: [['<%', '%>']],
   ruby: [
     ['<%=', '%>'],
     ['"', '"'],
