@@ -1,6 +1,6 @@
 # Html Missing Features
 
-Some missing features for html/jsx/tsx/erb/php/angular/svelte/twig/vue/xml that are not built into VSCode
+Some missing features for html/jsx/tsx/erb/php/angular/nunjucks/svelte/twig/vue/xml that are not built into VSCode
 
 - Auto Rename Tag
 
