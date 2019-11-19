@@ -1,0 +1,10 @@
+old word: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+text:"<aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa></aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>"
+offset:0
+word:"<aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+oldWord:"<aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+
+<aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa></aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa>

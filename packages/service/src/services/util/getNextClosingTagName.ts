@@ -1,19 +1,22 @@
 import { Scanner, ScannerState, TokenType, createScanner } from 'html-parser'
-import { getMatchingTagPairs } from './getMatchingTagPairs'
-import { isSelfClosingTag } from './isSelfClosingTag'
 
 export const getNextClosingTagName: (
   scanner: Scanner,
   initialOffset: number,
-  languageId: string
+  matchingTagPairs: [string, string][],
+  isSelfClosingTag: (tagName: string) => boolean
 ) =>
   | {
       tagName: string
       offset: number
       seenRightAngleBracket: boolean
     }
-  | undefined = (scanner, initialOffset, languageId) => {
-  const matchingTagPairs = getMatchingTagPairs(languageId)
+  | undefined = (
+  scanner,
+  initialOffset,
+  matchingTagPairs,
+  isSelfClosingTag
+) => {
   let offset = initialOffset
   let nextClosingTagName: string | undefined
   let stack: string[] = []
@@ -72,7 +75,7 @@ export const getNextClosingTagName: (
         return undefined
       }
       const tokenText = scanner.getTokenText()
-      if (isSelfClosingTag(languageId, tokenText)) {
+      if (isSelfClosingTag(tokenText)) {
         continue
       }
       // console.log('push' + tokenText)
@@ -111,7 +114,7 @@ export const getNextClosingTagName: (
   }
 }
 
-const text = `<svg2 >
-<circle cx="" />
-</svg>`
-getNextClosingTagName(createScanner(text), 8, 'html') //?
+// const text = `<svg2 >
+// <circle cx="" />
+// </svg>`
+// getNextClosingTagName(createScanner(text), 8, 'html') //?

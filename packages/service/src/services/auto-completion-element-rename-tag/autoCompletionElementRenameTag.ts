@@ -1,8 +1,10 @@
-import { createScanner, ScannerState, TokenType } from 'html-parser'
+import { createScanner } from 'html-parser'
 
 import { getPreviousOpeningTagName } from '../util/getPreviousOpenTagName'
 import { getNextClosingTagName } from '../util/getNextClosingTagName'
-import { getMatchingTagPairs } from '../util/getMatchingTagPairs'
+
+// TODO
+// what happens when old word is start tag and new word is end tag or vice versa
 
 // TODO: bug inside comment
 //
@@ -14,44 +16,34 @@ import { getMatchingTagPairs } from '../util/getMatchingTagPairs'
 export const doAutoCompletionElementRenameTag: (
   text: string,
   offset: number,
-  languageId: string
+  newWord: string,
+  oldWord: string,
+  matchingTagPairs: [string, string][],
+  isSelfClosingTag: (tagName: string) => boolean
 ) =>
   | {
       startOffset: number
       endOffset: number
-      word: string
+      tagName: string
     }
-  | undefined = (text, offset, languageId) => {
-  const matchingTagPairs = getMatchingTagPairs(languageId)
-  const scanner = createScanner(text, { initialOffset: offset })
-  scanner.stream.goBack(1)
-  scanner.stream.goBackWhileRegex(/[^\s<>\\]/)
-  const char = scanner.stream.peekLeft(1)
-  if (char !== '<') {
-    return undefined
-  }
-  const nextChar = scanner.stream.peekRight(0)
-  const atEndTag = nextChar === '/'
-  const atStartTag = /[^\s<]/.test(nextChar)
-  if (!atEndTag && !atStartTag) {
-    return undefined
-  }
-  if (atEndTag) {
-    scanner.stream.advance(1)
-    const currentPosition = scanner.stream.position
-    scanner.stream.goBackToUntilChar('/')
-    scanner.state = ScannerState.AfterOpeningEndTag
-    const token = scanner.scan()
-    if (token !== TokenType.EndTag) {
-      return undefined
-    }
-    const tagName = scanner.getTokenText()
-    scanner.stream.goTo(currentPosition - 2)
-
+  | undefined = (
+  text,
+  offset,
+  newWord,
+  oldWord,
+  matchingTagPairs,
+  isSelfClosingTag
+) => {
+  const scanner = createScanner(text)
+  if (newWord.startsWith('</')) {
+    scanner.stream.goTo(offset - 1)
+    const tagName = newWord.slice(2)
+    const oldTagName = oldWord.slice(2)
     const parent = getPreviousOpeningTagName(
       scanner,
       scanner.stream.position,
-      languageId
+      matchingTagPairs,
+      isSelfClosingTag
     )
     if (!parent) {
       return undefined
@@ -59,36 +51,33 @@ export const doAutoCompletionElementRenameTag: (
     if (parent.tagName === tagName) {
       return undefined
     }
+    if (parent.tagName !== oldTagName) {
+      return undefined
+    }
     const startOffset = parent.offset
     const endOffset = parent.offset + parent.tagName.length
-    const word = tagName
     return {
       startOffset,
       endOffset,
-      word,
+      tagName,
     }
   } else {
-    scanner.stream.goBackToUntilChar('<')
-    scanner.state = ScannerState.AfterOpeningStartTag
-    scanner.scan()
-    const tagName = scanner.getTokenText()
-    scanner.stream.advanceUntilEitherChar(['<', '>'], matchingTagPairs)
-    const char = scanner.stream.peekRight()
-    if (char === '<') {
-      return undefined
-    }
-    scanner.stream.advanceUntilChar('>')
-    if (scanner.stream.previousChars(2) === '--') {
-      return undefined
-    }
-    if (scanner.stream.previousChars(1) === '/') {
+    scanner.stream.goTo(offset + 1)
+    const tagName = newWord.slice(1)
+    const oldTagName = oldWord.slice(1)
+    const hasAdvanced = scanner.stream.advanceUntilEitherChar(
+      ['>'],
+      matchingTagPairs
+    )
+    if (!hasAdvanced) {
       return undefined
     }
     scanner.stream.advance(1)
     const nextClosingTag = getNextClosingTagName(
       scanner,
       scanner.stream.position,
-      languageId
+      matchingTagPairs,
+      isSelfClosingTag
     )
     if (!nextClosingTag) {
       return undefined
@@ -96,18 +85,22 @@ export const doAutoCompletionElementRenameTag: (
     if (nextClosingTag.tagName === tagName) {
       return undefined
     }
+    if (nextClosingTag.tagName !== oldTagName) {
+      // console.log('oh no')
+      return undefined
+    }
+    // console.log('yes')
     const startOffset = nextClosingTag.offset
     const endOffset = nextClosingTag.offset + nextClosingTag.tagName.length
-    const word = tagName
-
     return {
       startOffset,
       endOffset,
-      word,
+      tagName,
     }
   }
 }
 
+doAutoCompletionElementRenameTag('<b></a>', 0, '<b', '<a', [], () => false) //?
 // TODO add to tests
 // const text = `<button>{/* <button> */}</buttonn>`
 // doAutoCompletionElementRenameTag(text, 30, [['/*', '*/']]) //?
@@ -140,5 +133,5 @@ export const doAutoCompletionElementRenameTag: (
 //   <link>
 // </headd>`
 // doAutoCompletionElementRenameTag(text, 21, 'html') //?
-const text = `<head><link></headd>`
-doAutoCompletionElementRenameTag(text, 17, 'html') //?
+// const text = `<head><link></headd>`
+// doAutoCompletionElementRenameTag(text, 17, 'html', []) //?

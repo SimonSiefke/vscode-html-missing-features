@@ -1,19 +1,22 @@
 import { createScanner, Scanner, ScannerState, TokenType } from 'html-parser'
-import { getMatchingTagPairs } from './getMatchingTagPairs'
-import { isSelfClosingTag } from './isSelfClosingTag'
 
 export const getPreviousOpeningTagName: (
   scanner: Scanner,
   initialOffset: number,
-  languageId: string
+  matchingTagPairs: [string, string][],
+  isSelfClosingTag: (tagName: string) => boolean
 ) =>
   | {
       tagName: string
       offset: number
       seenRightAngleBracket: boolean
     }
-  | undefined = (scanner, initialOffset, languageId) => {
-  const matchingTagPairs = getMatchingTagPairs(languageId)
+  | undefined = (
+  scanner,
+  initialOffset,
+  matchingTagPairs,
+  isSelfClosingTag
+) => {
   let offset = initialOffset + 1
   let parentTagName: string | undefined
   let stack: string[] = []
@@ -95,7 +98,7 @@ export const getPreviousOpeningTagName: (
       selfClosing = false
       continue
     }
-    if (isSelfClosingTag(languageId, tokenText)) {
+    if (isSelfClosingTag(tokenText)) {
       continue
     }
     // pop closing tags from the tags
@@ -104,7 +107,7 @@ export const getPreviousOpeningTagName: (
       if (top === tokenText) {
         continue outer
       }
-      if (isSelfClosingTag(languageId, top)) {
+      if (isSelfClosingTag(top)) {
         continue inner
       }
       return undefined
@@ -144,5 +147,5 @@ export const getPreviousOpeningTagName: (
 //   <link>
 // </headd>`
 // getPreviousOpeningTagName(createScanner(text), 15, 'html') //?
-const text = `<head><link></headd>`
-getPreviousOpeningTagName(createScanner(text), 12, 'html') //?
+// const text = `<head><link></headd>`
+// getPreviousOpeningTagName(createScanner(text), 12, 'html') //?
