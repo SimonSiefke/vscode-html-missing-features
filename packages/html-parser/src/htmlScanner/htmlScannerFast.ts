@@ -167,12 +167,9 @@ export function createScannerFast({
           state = ScannerStateFast.WithinEndTag
           return TokenTypeFast.EndTag
         } else if (stream.peekRight(0) === '>') {
-          console.log('self close')
           state = ScannerStateFast.WithinEndTag
           return TokenTypeFast.EndTag
         }
-        // TODO error
-        console.error('error 1111')
         return TokenTypeFast.Unknown
       case ScannerStateFast.WithinEndTag:
         if (stream.skipWhitespace()) {
