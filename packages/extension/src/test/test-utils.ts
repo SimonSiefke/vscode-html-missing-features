@@ -202,6 +202,6 @@ export async function run(
 
 export const ciSlowNess = 2.7
 
-export const slowSpeed = 5 * ciSlowNess
+export const slowSpeed = 20 * ciSlowNess
 
 export const slowTimeout = 340 * ciSlowNess
