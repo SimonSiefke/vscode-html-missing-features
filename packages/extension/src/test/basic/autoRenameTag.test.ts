@@ -4,11 +4,9 @@ import {
   createTestFile,
   run,
   TestCase,
-  ciSlowNess,
   slowTimeout,
+  slowSpeed,
 } from '../test-utils'
-
-const slowSpeed = 95 * ciSlowNess
 
 suite('Auto Rename Tag', () => {
   before(async () => {

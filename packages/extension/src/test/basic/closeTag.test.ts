@@ -3,11 +3,9 @@ import {
   createTestFile,
   run,
   activateExtension,
-  ciSlowNess,
+  slowTimeout,
 } from '../test-utils'
 import { before } from 'mocha'
-
-const timeout = 300 * ciSlowNess
 
 suite('Close Tag', () => {
   before(async () => {
@@ -35,6 +33,6 @@ suite('Close Tag', () => {
         skip: true,
       },
     ]
-    await run(testCases, { timeout })
+    await run(testCases, { timeout: slowTimeout })
   })
 })

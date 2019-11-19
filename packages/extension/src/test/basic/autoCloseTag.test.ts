@@ -3,12 +3,10 @@ import {
   createTestFile,
   run,
   activateExtension,
-  ciSlowNess,
+  slowTimeout,
 } from '../test-utils'
 import { before } from 'mocha'
 // TODO use deindent from typescript
-
-const timeout = 300 * ciSlowNess
 
 suite('Auto Close Tag', () => {
   before(async () => {
@@ -50,7 +48,7 @@ suite('Auto Close Tag', () => {
         expect: '<!doctype html>',
       },
     ]
-    await run(testCases, { timeout })
+    await run(testCases, { timeout: slowTimeout })
   })
 
   test('multicursor', async () => {
@@ -105,6 +103,6 @@ suite('Auto Close Tag', () => {
 `.trimStart(),
       },
     ]
-    await run(testCases, { timeout })
+    await run(testCases, { timeout: slowTimeout })
   })
 })
