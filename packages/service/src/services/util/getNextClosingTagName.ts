@@ -105,6 +105,10 @@ export const getNextClosingTagName: (
   }
 }
 
-const text = `const button = <button> {/* <button> */}</button>;`
-
-getNextClosingTagName(createScanner(text), 38, [['/*', '*/']]) //?
+const text = `<svg2 >
+<circle cx="" />
+</svg>`
+getNextClosingTagName(createScanner(text), 8, [
+  ['<!--', '-->'],
+  ['"', '"'],
+]) //?

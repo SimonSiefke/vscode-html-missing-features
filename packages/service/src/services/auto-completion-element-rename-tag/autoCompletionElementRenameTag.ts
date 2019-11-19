@@ -123,5 +123,17 @@ export const doAutoCompletionElementRenameTag: (
 //   <div>test</
 // </divv>`
 // doAutoCompletionElementRenameTag(text, 20, [['<!--', '-->']]) //?
-const text = `<>test</l>`
-doAutoCompletionElementRenameTag(text, 1, [['<!--', '-->']]) //?
+// const text = `<>test</l>`
+// doAutoCompletionElementRenameTag(text, 1, [['<!--', '-->']]) //?
+// const text = `<svg2 >
+// <circle cx="" />
+// </svg>`
+// doAutoCompletionElementRenameTag(text, 3, [['<!--', '-->']]) //?
+const text = `<aa target="_blank" href="blabla.com">
+    Bla Bla
+</a>`
+doAutoCompletionElementRenameTag(text, 2, [
+  ['{', '}'],
+  ["'", "'"],
+  ['"', "'"],
+]) //?

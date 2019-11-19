@@ -100,10 +100,26 @@ export class MultiLineStream {
     chars: string[],
     matchingTagPairs: [string, string][]
   ): boolean {
+    /**
+     * For these chars code can be ambiguous, e.g.
+     * <div class="<button class="></div>"</button>
+     * Here, the button start tag can be interpreted as a class
+     * or the closing div tag can be interpreted as a class
+     * in this case we always assume that the quote we encounter
+     * is a opening quote
+     * TODO separate between matching tag pairs in attributes vs between tags
+     */
+    const matchingTagPairsThatPreferSkip = ['"', "'"]
     while (this.position > 0) {
       // don't go outside of matching tag pair, e.g. don't go before '<!--' in '<!-- <but|ton> --> '
       outerForLoop1: for (const matchingTagPair of matchingTagPairs) {
         for (let j = 0; j < matchingTagPair[0].length; j++) {
+          if (
+            matchingTagPair[0] === matchingTagPair[1] &&
+            matchingTagPairsThatPreferSkip.includes(matchingTagPair[0])
+          ) {
+            continue outerForLoop1
+          }
           if (
             matchingTagPair[0][matchingTagPair[0].length - 1 - j] !==
             this.source[this.position - j]
@@ -139,16 +155,33 @@ export class MultiLineStream {
     chars: string[],
     matchingTagPairs: [string, string][]
   ): boolean {
+    /**
+     * For these chars code can be ambiguous, e.g.
+     * <div class="<button class="></div>"</button>
+     * Here, the button start tag can be interpreted as a class
+     * or the closing div tag can be interpreted as a class
+     * in this case we always assume that the quote we encounter
+     * is a opening quote
+     * TODO separate between matching tag pairs in attributes vs between tags
+     */
+    const matchingTagPairsThatPreferSkip = ['"', "'"]
     while (this.position < this.source.length) {
       // don't go outside of matching tag pair, e.g. don't go past '-->' in '<!-- <but|ton> --> '
       outerForLoop1: for (const matchingTagPair of matchingTagPairs) {
         for (let j = 0; j < matchingTagPair[1].length; j++) {
+          if (
+            matchingTagPair[0] === matchingTagPair[1] &&
+            matchingTagPairsThatPreferSkip.includes(matchingTagPair[0])
+          ) {
+            continue outerForLoop1
+          }
           if (matchingTagPair[1][j] !== this.source[this.position + j]) {
             continue outerForLoop1
           }
         }
         return false
       }
+
       // skip matching tag pairs, e.g. skip '<!-- </button> -->' in '<button><!-- </button> --></button>'
       outerForLoop2: for (const matchingTagPair of matchingTagPairs) {
         for (let i = 0; i < matchingTagPair[0].length; i++) {

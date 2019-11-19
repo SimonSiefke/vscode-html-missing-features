@@ -37,6 +37,11 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['```', '```'],
     ['<?', '?>'],
   ],
+  marko: [
+    ['<!--', '-->'],
+    ['${', '}'],
+    ['<html-comment>', '</html-comment>'],
+  ],
   nunjucks: [
     ['{%', '%}'],
     ['{{', '}}'],
@@ -62,7 +67,7 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
   javascriptreact: [
     ['{', '}'],
     ["'", "'"],
-    ['"', "'"],
+    ['"', '"'],
   ],
   mustache: [['{{', '}}']],
   razor: [
@@ -76,6 +81,11 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['"', '"'],
     ["'", "'"],
   ],
+  svg: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
   typescript: [
     ['<!--', '-->'],
     ["'", "'"],
@@ -85,7 +95,7 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
   typescriptreact: [
     ['{', '}'],
     ["'", "'"],
-    ['"', "'"],
+    ['"', '"'],
   ],
   twig: [
     ['<!--', '-->'],
@@ -109,6 +119,7 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['<!--', '-->'],
     ['"', '"'],
     ["'", "'"],
+    ['{{', '}}'],
   ],
 }
 const getMatchingTagPairs: Utils['getMatchingTagPairs'] = languageId =>
