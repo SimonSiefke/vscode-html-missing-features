@@ -13,8 +13,16 @@ const isSelfClosingTag: Utils['isSelfClosingTag'] = tagName =>
   tagsThatAreSelfClosing.includes(tagName)
 
 const matchingTagPairs: { [languageId: string]: [string, string][] } = {
-  css: [['/*', '*/']],
-  ruby: [['<%=', '%>']],
+  css: [
+    ['/*', '*/'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
+  ruby: [
+    ['<%=', '%>'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
   html: [
     ['<!--', '-->'],
     ['"', '"'],
@@ -23,13 +31,21 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
   ],
   markdown: [
     ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
     ['```', '```'],
     ['<?', '?>'],
   ],
-  plaintext: [['<!--', '-->']],
+  plaintext: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
   php: [
     ['<!--', '-->'],
     ['<?', '?>'],
+    ['"', '"'],
+    ["'", "'"],
   ],
   javascript: [
     ['<!--', '-->'],
@@ -37,29 +53,51 @@ const matchingTagPairs: { [languageId: string]: [string, string][] } = {
     ['"', '"'],
     ['`', '`'],
   ],
-  javascriptreact: [['{', '}']],
+  javascriptreact: [
+    ['{', '}'],
+    ["'", "'"],
+    ['"', "'"],
+  ],
   razor: [
     ['<!--', '-->'],
     ['@{', '}'],
+    ['"', '"'],
+    ["'", "'"],
   ],
-  svelte: [['<!--', '-->']],
+  svelte: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
   typescript: [
     ['<!--', '-->'],
     ["'", "'"],
     ['"', '"'],
     ['`', '`'],
   ],
-  typescriptreact: [['{', '}']],
+  typescriptreact: [
+    ['{', '}'],
+    ["'", "'"],
+    ['"', "'"],
+  ],
   twig: [
     ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
     ['{{', '}}'],
     ['{%', '%}'],
   ],
   xml: [
     ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
     ['<?', '?>'],
   ],
-  vue: [['<!--', '-->']],
+  vue: [
+    ['<!--', '-->'],
+    ['"', '"'],
+    ["'", "'"],
+  ],
 }
 const getMatchingTagPairs: Utils['getMatchingTagPairs'] = languageId =>
   matchingTagPairs[languageId] || matchingTagPairs['html']
