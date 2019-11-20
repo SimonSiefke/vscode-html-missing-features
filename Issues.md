@@ -613,3 +613,21 @@ at some point it stops renaming the starting tag
 type 1 multiple times
  delete multiple times
  -->
+
+<!-- TODO bug
+input <div>test</div>
+type s
+<divs>test</divs>
+
+paste
+<div>test</div>
+type delete
+should be
+<di>test</di>
+
+but is
+<di></div>
+
+(not updating)
+
+ -->

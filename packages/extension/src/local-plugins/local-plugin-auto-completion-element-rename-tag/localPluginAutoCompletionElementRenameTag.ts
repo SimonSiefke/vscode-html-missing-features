@@ -58,7 +58,7 @@ let lastChangeByAutoRenameTag: { fsPath: string; version: number } = {
 }
 
 const applyResults: (results: Result[]) => Promise<void> = async results => {
-  console.log('apply ' + results.length + ' results')
+  // console.log('apply ' + results.length + ' results')
   const prev = activeTextEditor.document.version
   const applied = await activeTextEditor.edit(
     editBuilder => {
@@ -96,7 +96,7 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   }
 
   for (const result of results) {
-    console.log(JSON.stringify(result))
+    // console.log(JSON.stringify(result))
     // if (!result) {
     //   console.error('no result client')
     //   continue
@@ -110,6 +110,7 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
     if (result.originalWord.startsWith('</')) {
       moved = result.endOffset - result.startOffset + 2
     }
+    // console.log('set')
     // const newLength = result.originalWord.length
     wordsAtOffsets[result.originalOffset + moved] = {
       newWord: oldWordAtOffset && oldWordAtOffset.newWord,
@@ -124,13 +125,14 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   }
 }
 
-// let tags: Tag[]
 let activeTextEditor: vscode.TextEditor | undefined
 let latestCancelTokenSource: CancellationTokenSource | undefined
 let previousText: string
+const tagNameReLeft = /<\/?[^<>\s\\\/\'\"\(\)\`\{\}\[\]]*$/
+const tagNameRERight = /^[^<>\s\\\/\'\"\(\)\`\{\}\[\]]*/
 
 let wordsAtOffsets: {
-  [offset: number]: {
+  [offset: string]: {
     oldWord: string
     newWord: string
   }
@@ -164,6 +166,7 @@ const updateWordsAtOffset: (tags: Tag[]) => void = tags => {
     tag.oldWord = wordsAtOffsets[tag.offset].oldWord
     // console.log('(2) get old word ' + tag.oldWord)
   }
+  // console.log(JSON.stringify(wordsAtOffsets))
 }
 const doAutoCompletionElementRenameTag: (
   api: LocalPluginApi,
@@ -178,16 +181,6 @@ const doAutoCompletionElementRenameTag: (
     return
   }
   const beforeVersion = activeTextEditor.document.version
-
-  //
-  // busy work
-  //
-  // let i = 0
-  // while (i < 100000000) {
-  //   i++
-  //   i += 2
-  //   i--
-  // }
 
   const results = await askServerForAutoCompletionsElementRenameTag(
     api,
@@ -223,8 +216,7 @@ const doAutoCompletionElementRenameTag: (
 
 export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
   activeTextEditor = vscode.window.activeTextEditor
-  previousText =
-    activeTextEditor.document && activeTextEditor.document.getText()
+  previousText = activeTextEditor && activeTextEditor.document.getText()
   api.vscodeProxy.window.onDidChangeActiveTextEditor(textEditor => {
     // TODO clean up highlights
     activeTextEditor = textEditor
@@ -245,51 +237,75 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
     const sortedChanges = event.contentChanges
       .slice()
       .sort((a, b) => a.rangeOffset - b.rangeOffset)
-    console.log('-------------------------------------')
+    const keys = Object.keys(wordsAtOffsets)
+    // console.log('-------------------------------------')
     for (const change of sortedChanges) {
-      console.log('total insert' + totalInserted)
-      const startPosition = event.document.positionAt(
-        change.rangeOffset + totalInserted
-      )
-      const range = event.document.getWordRangeAtPosition(
-        startPosition,
-        /<\/?[a-zA-Z\-0-9]*/
-      )
-      if (!range) {
+      for (const key of keys) {
+        const parsedKey = parseInt(key, 10)
+        if (
+          change.rangeOffset <= parsedKey &&
+          parsedKey <= change.rangeOffset + change.rangeLength
+        ) {
+          // console.log('delete' + key)
+          delete wordsAtOffsets[key]
+        }
+      }
+      // console.log(JSON.stringify(wordsAtOffsets))
+      // console.log('total insert' + totalInserted)
+      const line = event.document.lineAt(change.range.start.line)
+      const lineStart = event.document.offsetAt(line.range.start)
+      const lineChangeOffset = change.rangeOffset - lineStart
+      const lineLeft = line.text.slice(0, lineChangeOffset + totalInserted)
+      const lineRight = line.text.slice(lineChangeOffset + totalInserted)
+      const lineTagNameLeft = lineLeft.match(tagNameReLeft)
+      const lineTagNameRight = lineRight.match(tagNameRERight)
+      const previousTextRight = previousText.slice(change.rangeOffset)
+      const previousTagNameRight = previousTextRight.match(tagNameRERight)
+
+      console.log(lineTagNameLeft)
+      console.log(lineTagNameRight)
+
+      console.log(previousTagNameRight)
+      console.log(previousText)
+      let newWord: string
+      let oldWord: string
+
+      if (!lineTagNameLeft) {
+        console.log('continue')
+        totalInserted += change.text.length - change.rangeLength
         continue
       }
-      // TODO more efficient to compute when selection changes?
-      const difference = event.document.getText(
-        new vscode.Range(range.start, startPosition)
-      ).length
-      const word = event.document.getText(range)
-      const firstPart = word.slice(0, difference)
-      console.log('first' + firstPart)
-      const secondPart = previousText.slice(
-        change.rangeOffset,
-        change.rangeOffset + change.rangeLength
-      )
-      console.log('second' + secondPart)
-      const thirdPart = word.slice(difference + change.text.length)
-      console.log('third' + thirdPart)
-      const oldWord = firstPart + secondPart + thirdPart
-      console.log('old word ' + oldWord)
-      const offset = event.document.offsetAt(range.start)
+      newWord = lineTagNameLeft[0]
+      oldWord = lineTagNameLeft[0]
+      // console.log('new' + newWord)
+      if (lineTagNameRight) {
+        newWord += lineTagNameRight[0]
+      }
+      if (previousTagNameRight) {
+        oldWord += previousTagNameRight[0]
+      }
+
+      const offset =
+        change.rangeOffset - lineTagNameLeft[0].length + totalInserted
+      console.log('new word' + newWord)
+      console.log('old word' + oldWord)
+      console.log('offset' + offset)
       tags.push({
         oldWord,
-        word,
+        word: newWord,
         offset,
         previousOffset: offset - totalInserted,
       })
       totalInserted += change.text.length - change.rangeLength
     }
-    console.log('tags')
-    console.log(JSON.stringify(tags))
-    console.log('\n')
+    // console.log('tags')
+    // console.log(JSON.stringify(tags))
+    // console.log('\n')
     // console.log(JSON.stringify(wordsAtOffsets))
     // console.timeEnd('get tags')
     updateWordsAtOffset(tags)
     if (tags.length === 0) {
+      previousText = currentText
       return
     }
     const beforeVersion = activeTextEditor.document.version
@@ -310,7 +326,7 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       // console.log(event.contentChanges)
       return
     }
-    console.log('-----------------------------------')
+    // console.log('-----------------------------------')
 
     // console.log(
     //   'change' + event.contentChanges[0] && event.contentChanges[0].text

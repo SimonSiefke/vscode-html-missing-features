@@ -82,33 +82,6 @@ const tests: Test[] = [
   {
     path: 'basic',
   },
-  {
-    path: 'advanced/language-javascriptreact',
-  },
-  {
-    path: 'advanced/language-php',
-  },
-  {
-    path: 'advanced/language-ruby',
-  },
-  {
-    path: 'advanced/language-markdown',
-  },
-  {
-    path: 'advanced/language-svelte',
-  },
-  {
-    path: 'advanced/language-svg',
-  },
-  {
-    path: 'advanced/language-typescriptreact',
-  },
-  {
-    path: 'advanced/language-vue',
-  },
-  {
-    path: 'advanced/language-xml',
-  },
 ]
 ;(async () => {
   const onlyTest = tests.find(test => test.only)

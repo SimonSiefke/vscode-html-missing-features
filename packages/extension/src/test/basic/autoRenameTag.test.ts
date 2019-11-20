@@ -447,22 +447,6 @@ suite('Auto Rename Tag', () => {
     })
   })
 
-  test.skip('language razor', async () => {
-    await createTestFile('auto-rename-tag.language.vue')
-    const testCases: TestCase[] = [
-      {
-        input: `<template>
-  <button|>this is a button</button>
-</template>`,
-        type: '2',
-        expect: `<template>
-  <button2>this is a button</button2>
-</template>`,
-      },
-    ]
-    await run(testCases)
-  })
-
   test.skip('language typescript', async () => {
     await createTestFile('auto-rename-tag.language.vue')
     const testCases: TestCase[] = [
@@ -598,6 +582,376 @@ suite('Auto Rename Tag', () => {
     ]
     await run(testCases, {
       speed: slowSpeed,
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language angular', async () => {
+    await createTestFile('auto-rename-tag.component.html')
+
+    const testCases: TestCase[] = [
+      {
+        input: `<h2>Products</h2>
+
+<div| *ngFor="let product of products">
+
+  <h3>
+    <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+
+</div>`,
+        type: 'v',
+        expect: `<h2>Products</h2>
+
+<divv *ngFor="let product of products">
+
+  <h3>
+    <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+
+</divv>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language javascriptreact', async () => {
+    await createTestFile('auto-rename-tag.jsx')
+
+    const testCases: TestCase[] = [
+      {
+        input: `const button = <button|>{/* </button> */}</button>;`,
+        type: 'n',
+        expect: `const button = <buttonn>{/* </button> */}</buttonn>;`,
+      },
+      {
+        input: `const button = <button>{/* </button|> */}</button>;`,
+        type: 'n',
+        expect: `const button = <button>{/* </buttonn> */}</button>;`,
+      },
+      {
+        input: `const button = <button>{/* </button> */}</button|>;`,
+        type: 'n',
+        expect: `const button = <buttonn>{/* </button> */}</buttonn>;`,
+      },
+      {
+        input: 'const button = <button|>{/* <button> */}</button>',
+        type: 'n',
+        expect: 'const button = <buttonn>{/* <button> */}</buttonn>',
+      },
+      {
+        input: 'const button = <button>{/* <button|> */}</button>',
+        type: 'n',
+        expect: 'const button = <button>{/* <buttonn> */}</button>',
+      },
+      {
+        input: 'const button = <button>{/* <button> */}</button|>',
+        type: 'n',
+        expect: 'const button = <buttonn>{/* <button> */}</buttonn>',
+      },
+      {
+        input: 'const buttons = <|><button/><button/></>',
+        type: 'React.Fragment',
+        expect:
+          'const buttons = <React.Fragment><button/><button/></React.Fragment>',
+        speed: slowSpeed,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language markdown', async () => {
+    await createTestFile('auto-rename-tag.md')
+    const testCases: TestCase[] = [
+      {
+        input: `\`\`\`html
+<button|>
+</button>
+\`\`\``,
+        type: 'n',
+        expect: `\`\`\`html
+<buttonn>
+</buttonn>
+\`\`\``,
+      },
+      {
+        input: `\`\`\`html
+<button|>
+\`\`\`
+
+\`\`\`html
+</button>
+\`\`\``,
+        type: 'n',
+        expect: `\`\`\`html
+<buttonn>
+\`\`\`
+
+\`\`\`html
+</button>
+\`\`\``,
+      },
+      {
+        input: `\`\`\`html
+<button>
+\`\`\`
+
+\`\`\`html
+</button|>
+\`\`\``,
+        type: 'n',
+        expect: `\`\`\`html
+<button>
+\`\`\`
+
+\`\`\`html
+</buttonn>
+\`\`\``,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language php', async () => {
+    await createTestFile('auto-rename-tag.php')
+    const testCases: TestCase[] = [
+      {
+        input: `<div| class = 'bg-warning'>
+  <!-- </div> -->
+  <?php displayErrors($errors); ?>
+</div>`,
+        type: 'v',
+        expect: `<divv class = 'bg-warning'>
+  <!-- </div> -->
+  <?php displayErrors($errors); ?>
+</divv>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language razor', async () => {
+    await createTestFile('auto-rename-tag.cshtml')
+    const testCases: TestCase[] = [
+      {
+        input: `<p|>Last week this time: @(DateTime.Now - TimeSpan.FromDays(7))</p>`,
+        type: 'p',
+        expect: `<pp>Last week this time: @(DateTime.Now - TimeSpan.FromDays(7))</pp>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language svelte', async () => {
+    await createTestFile('auto-rename-tag.svelte')
+    const testCases: TestCase[] = [
+      {
+        input: `<script>
+	let count = 1;
+
+	function handleClick() {
+		count += 1;
+	}
+</script>
+
+<button| on:click={handleClick}>
+	Count: {count}
+</button>`,
+        type: '2',
+        expect: `<script>
+	let count = 1;
+
+	function handleClick() {
+		count += 1;
+	}
+</script>
+
+<button2 on:click={handleClick}>
+	Count: {count}
+</button2>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language svg', async () => {
+    await createTestFile('auto-rename-tag.svg')
+    const testCases: TestCase[] = [
+      {
+        input: `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg| xmlns="http://www.w3.org/2000/svg" width="500" height="500">
+<circle cx="250" cy="250" r="210" fill="#fff" stroke="#000" stroke-width="8"/>
+</svg>
+`,
+        type: '2',
+        expect: `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg2 xmlns="http://www.w3.org/2000/svg" width="500" height="500">
+<circle cx="250" cy="250" r="210" fill="#fff" stroke="#000" stroke-width="8"/>
+</svg2>
+`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language typescriptreact', async () => {
+    await createTestFile('auto-rename-tag.tsx')
+    const testCases: TestCase[] = [
+      {
+        input: `interface Props {
+	readonly dispatch: Dispatch<() => void>;
+}
+
+const Link = <a target="_blank" href="blabla.com">
+    Bla Bla
+</a>`,
+        selection: [47, 57],
+        type: 'any',
+        expect: `interface Props {
+	readonly dispatch: Dispatch<any>;
+}
+
+const Link = <a target="_blank" href="blabla.com">
+    Bla Bla
+</a>`,
+      },
+      {
+        input: `interface Props {
+	readonly dispatch: Dispatch<() => void>;
+}
+
+const Link = <a| target="_blank" href="blabla.com">
+    Bla Bla
+</a>`,
+        type: 'a',
+        expect: `interface Props {
+	readonly dispatch: Dispatch<() => void>;
+}
+
+const Link = <aa target="_blank" href="blabla.com">
+    Bla Bla
+</aa>`,
+      },
+      {
+        input: `interface Props {
+	readonly dispatch: Dispatch<() => void>;
+}
+
+const Link = <a target="_blank" href="blabla.com">
+    Bla Bla
+</a|>`,
+        type: 'a',
+        expect: `interface Props {
+	readonly dispatch: Dispatch<() => void>;
+}
+
+const Link = <aa target="_blank" href="blabla.com">
+    Bla Bla
+</aa>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language vue', async () => {
+    await createTestFile('auto-rename-tag.vue')
+    const testCases: TestCase[] = [
+      {
+        input: `<template>
+  <div| id="app">
+    {{ message }}
+  </div>
+</template>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>`,
+        type: 'v',
+        expect: `<template>
+  <divv id="app">
+    {{ message }}
+  </divv>
+</template>
+
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
+  }
+})
+</script>`,
+      },
+    ]
+    await run(testCases, {
+      timeout: slowTimeout,
+    })
+  })
+
+  test('language xml', async () => {
+    await createTestFile('auto-rename-tag.xml')
+    const testCases: TestCase[] = [
+      {
+        input: `<?xml| version = "1.0" encoding = "UTF-8" ?>
+<class_list>
+   <student>
+      <name>Tanmay</name>
+      <grade>A</grade>
+   </student>
+</class_list>`,
+        type: 'l',
+        expect: `<?xmll version = "1.0" encoding = "UTF-8" ?>
+<class_list>
+   <student>
+      <name>Tanmay</name>
+      <grade>A</grade>
+   </student>
+</class_list>`,
+      },
+      {
+        input: `<?xml version = "1.0" encoding = "UTF-8" ?>
+<class_list>
+   <student|>
+      <name>Tanmay</name>
+      <grade>A</grade>
+   </student>
+</class_list>`,
+        type: 't',
+        expect: `<?xml version = "1.0" encoding = "UTF-8" ?>
+<class_list>
+   <studentt>
+      <name>Tanmay</name>
+      <grade>A</grade>
+   </studentt>
+</class_list>`,
+      },
+    ]
+    await run(testCases, {
       timeout: slowTimeout,
     })
   })

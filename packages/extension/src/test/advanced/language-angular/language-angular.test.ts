@@ -9,7 +9,33 @@ test('language angular', async () => {
   await activateExtension()
   const document = await vscode.workspace.openTextDocument(getUri('index.jsx'))
   await vscode.window.showTextDocument(document)
-  const testCases: TestCase[] = []
+  const testCases: TestCase[] = [
+    {
+      input: `<h2>Products</h2>
+
+<div| *ngFor="let product of products">
+
+  <h3>
+    <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+
+</div>`,
+      type: 'v',
+      expect: `<h2>Products</h2>
+
+<divv *ngFor="let product of products">
+
+  <h3>
+    <a [title]="product.name + ' details'">
+      {{ product.name }}
+    </a>
+  </h3>
+
+</divv>`,
+    },
+  ]
   await run(testCases, {
     timeout: slowTimeout,
   })
