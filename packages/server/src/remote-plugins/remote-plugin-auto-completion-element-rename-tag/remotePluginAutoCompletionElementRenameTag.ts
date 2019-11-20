@@ -52,10 +52,21 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
   api.connectionProxy.onRequest(requestType, ({ textDocument, tags }) => {
     const document = api.documentsProxy.get(textDocument.uri)
     if (!document) {
-      console.log('no document')
       return []
     }
     const text = document.getText()
+
+    // console.log('server version' + document.version)
+    //
+    // busy work
+    //
+    // let i = 0
+    // while (i < 100000000) {
+    //   i++
+    //   i += 2
+    //   i--
+    // }
+
     /**
      * actual cursor offset depends on the inserted text, e.g.
      * <h1|></h1>
@@ -85,6 +96,8 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
     const matchingTagPairs = getMatchingTagPairs(document.languageId)
     const isSelfClosingTag: (tagName: string) => boolean = tagName =>
       _isSelfClosingTag(document.languageId, tagName)
+
+    // console.log(JSON.stringify(tags))
     const results: (Result | undefined)[] = tags.map(tag => {
       const result = doAutoCompletionElementRenameTag(
         text,
@@ -104,19 +117,20 @@ export const remotePluginAutoCompletionElementRenameTag: RemotePlugin = api => {
 
     const uniqueResults = results.filter(Boolean) as Result[]
 
-    if (uniqueResults.length === 0) {
-      console.log(
-        JSON.stringify({
-          text,
-          offset: tags[0].offset,
-          word: tags[0].word,
-          oldWord: tags[0].oldWord,
-          matchingTagPairs,
-          isSelfClosingTag,
-        })
-      )
-      console.log(JSON.stringify(results))
-    }
+    // if (uniqueResults.length === 0) {
+    //   // console.error('nothing')
+    //   console.log(
+    //     JSON.stringify({
+    //       text,
+    //       offset: tags[0].offset,
+    //       word: tags[0].word,
+    //       oldWord: tags[0].oldWord,
+    //       matchingTagPairs,
+    //       isSelfClosingTag,
+    //     })
+    //   )
+    //   console.log(JSON.stringify(results))
+    // }
     return uniqueResults
   })
 }

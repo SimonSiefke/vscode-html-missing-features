@@ -36,7 +36,7 @@ export const doAutoCompletionElementRenameTag: (
 ) => {
   const scanner = createScanner(text)
   if (newWord.startsWith('</')) {
-    scanner.stream.goTo(offset - 1)
+    scanner.stream.goTo(offset)
     const tagName = newWord.slice(2)
     const oldTagName = oldWord.slice(2)
     const parent = getPreviousOpeningTagName(
@@ -100,7 +100,7 @@ export const doAutoCompletionElementRenameTag: (
   }
 }
 
-doAutoCompletionElementRenameTag('<b></a>', 0, '<b', '<a', [], () => false) //?
+doAutoCompletionElementRenameTag('<a></b>', 3, '</b', '</a', [], () => false) //?
 // TODO add to tests
 // const text = `<button>{/* <button> */}</buttonn>`
 // doAutoCompletionElementRenameTag(text, 30, [['/*', '*/']]) //?

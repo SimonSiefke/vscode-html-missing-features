@@ -37,6 +37,7 @@ const askServerForAutoCompletionsElementRenameTag: (
   document: vscode.TextDocument,
   tags: Tag[]
 ) => Promise<Result[]> = async (api, document, tags) => {
+  // console.log('client version' + document.version)
   const params: Params = {
     textDocument: api.languageClientProxy.code2ProtocolConverter.asTextDocumentIdentifier(
       document
@@ -77,6 +78,7 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   )
   const next = activeTextEditor.document.version
   if (!applied) {
+    // console.log('not applied')
     // console.log(prev, next)
     // console.log(JSON.stringify(results))
     return
@@ -92,8 +94,26 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   }
 
   for (const result of results) {
+    // if (!result) {
+    //   console.error('no result client')
+    //   continue
+    // }
+    // console.log(typeof result)
     // console.log('(1) set old word to ' + result.originalWord)
-    wordsAtOffsets[result.originalOffset].oldWord = result.originalWord
+    const oldWordAtOffset = wordsAtOffsets[result.originalOffset]
+    delete wordsAtOffsets[result.originalOffset]
+
+    let moved = 0
+    if (result.originalWord.startsWith('</')) {
+      moved = result.endOffset - result.startOffset + 2
+    }
+    // const newLength = result.originalWord.length
+    wordsAtOffsets[result.originalOffset + moved] = {
+      newWord: oldWordAtOffset && oldWordAtOffset.newWord,
+      oldWord: result.originalWord,
+    }
+    // console.log('moved ' + moved)
+    // console.log(JSON.stringify(wordsAtOffsets))
   }
   lastChangeByAutoRenameTag = {
     fsPath: activeTextEditor.document.uri.fsPath,
@@ -101,22 +121,31 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   }
 }
 
-let tags: Tag[]
+// let tags: Tag[]
 let activeTextEditor: vscode.TextEditor | undefined
 let latestCancelTokenSource: CancellationTokenSource | undefined
 let previousText: string
 
-const wordsAtOffsets: {
+let wordsAtOffsets: {
   [offset: number]: {
     oldWord: string
     newWord: string
   }
 } = {}
 
-const doAutoCompletionElementRenameTag: (
-  api: LocalPluginApi,
-  tags: Tag[]
-) => Promise<void> = async (api, tags) => {
+const updateWordsAtOffset: (tags: Tag[]) => void = tags => {
+  const keys = Object.keys(wordsAtOffsets)
+  if (keys.length > 0) {
+    if (keys.length !== tags.length) {
+      wordsAtOffsets = {}
+    }
+    for (const tag of tags) {
+      if (!wordsAtOffsets.hasOwnProperty(tag.offset)) {
+        wordsAtOffsets = {}
+        break
+      }
+    }
+  }
   for (const tag of tags) {
     // console.log('(2) set old word to ' + tag.oldWord)
     wordsAtOffsets[tag.offset] = {
@@ -128,6 +157,11 @@ const doAutoCompletionElementRenameTag: (
     tag.oldWord = wordsAtOffsets[tag.offset].oldWord
     // console.log('(2) get old word ' + tag.oldWord)
   }
+}
+const doAutoCompletionElementRenameTag: (
+  api: LocalPluginApi,
+  tags: Tag[]
+) => Promise<void> = async (api, tags) => {
   if (latestCancelTokenSource) {
     latestCancelTokenSource.cancel()
   }
@@ -137,13 +171,25 @@ const doAutoCompletionElementRenameTag: (
     return
   }
   const beforeVersion = activeTextEditor.document.version
+
+  //
+  // busy work
+  //
+  // let i = 0
+  // while (i < 100000000) {
+  //   i++
+  //   i += 2
+  //   i--
+  // }
+
   const results = await askServerForAutoCompletionsElementRenameTag(
     api,
     activeTextEditor.document,
     tags
   )
   if (cancelTokenSource.token.isCancellationRequested) {
-    console.log('cancel requested')
+    console.error('cancel requested')
+
     return
   }
   if (latestCancelTokenSource === cancelTokenSource) {
@@ -151,8 +197,9 @@ const doAutoCompletionElementRenameTag: (
     cancelTokenSource.dispose()
   }
   if (results.length === 0) {
-    // console.log(wordsAtOffsets)
-    // console.log('no results')
+    // console.log(JSON.stringify(wordsAtOffsets))
+    // console.error('no results')
+    wordsAtOffsets = {}
     // process.exit(1)
     return
   }
@@ -178,29 +225,15 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       activeTextEditor.document && activeTextEditor.document.getText()
   })
   api.vscodeProxy.workspace.onDidChangeTextDocument(async event => {
+    const currentText = event.document.getText()
     if (api.utils.isIgnoredDocument(event.document)) {
       return
     }
     if (event.contentChanges.length === 0) {
       return
     }
-    const beforeVersion = activeTextEditor.document.version
-    // the change event is fired before we can update the version of the last change by auto rename tag, therefore we wait for that
-    await new Promise(resolve => setImmediate(resolve))
-    if (
-      lastChangeByAutoRenameTag.fsPath === event.document.uri.fsPath &&
-      lastChangeByAutoRenameTag.version === event.document.version
-    ) {
-      // console.log('return 3')
-      return
-    }
-    const afterVersion = activeTextEditor.document.version
-    if (beforeVersion !== afterVersion) {
-      // console.log('return 1')
-      // console.log(event.contentChanges)
-      return
-    }
-    tags = event.contentChanges.reduce((total, change) => {
+    console.time('get tags')
+    const tags = event.contentChanges.reduce((total, change) => {
       const startPosition = event.document.positionAt(change.rangeOffset)
       const range = event.document.getWordRangeAtPosition(
         startPosition,
@@ -213,6 +246,16 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       const difference = event.document.getText(
         new vscode.Range(range.start, startPosition)
       ).length
+
+      // console.log(previousText.slice(-100))
+      // console.log('diff' + difference)
+      // console.log(
+      //   'middle' +
+      //     previousText.slice(
+      //       change.rangeOffset,
+      //       change.rangeOffset + change.rangeLength
+      //     )
+      // )
       const word = event.document.getText(range)
       const oldWord =
         word.slice(0, difference) +
@@ -228,7 +271,35 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       })
       return total
     }, [] as Tag[])
-    previousText = event.document.getText()
+    console.timeEnd('get tags')
+    updateWordsAtOffset(tags)
+    if (tags.length === 0) {
+      return
+    }
+    const beforeVersion = activeTextEditor.document.version
+    // the change event is fired before we can update the version of the last change by auto rename tag, therefore we wait for that
+    await new Promise(resolve => setImmediate(resolve))
+    if (
+      lastChangeByAutoRenameTag.fsPath === event.document.uri.fsPath &&
+      lastChangeByAutoRenameTag.version === event.document.version
+    ) {
+      previousText = currentText
+      // console.log('return 3')
+      return
+    }
+    const afterVersion = activeTextEditor.document.version
+    if (beforeVersion !== afterVersion) {
+      // previousText = event.document.getText()
+      // console.log('return 1')
+      // console.log(event.contentChanges)
+      return
+    }
+
+    // console.log(
+    //   'change' + event.contentChanges[0] && event.contentChanges[0].text
+    // )
+    previousText = currentText
+
     // console.log('changes and text')
     // console.log(event.contentChanges)
     // console.log(event.document.getText())

@@ -571,3 +571,8 @@ when renaming met to meta it would require to find a closing met tag which is re
 
 
  -->
+
+<!-- TODO bug
+press and hold a at closing tag
+at some point it stops renaming the starting tag
+ -->
