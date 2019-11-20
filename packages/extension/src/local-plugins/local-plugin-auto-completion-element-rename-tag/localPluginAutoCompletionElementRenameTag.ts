@@ -11,6 +11,7 @@ interface Tag {
   word: string
   offset: number
   oldWord: string
+  previousOffset: number
 }
 
 interface Params {
@@ -57,6 +58,7 @@ let lastChangeByAutoRenameTag: { fsPath: string; version: number } = {
 }
 
 const applyResults: (results: Result[]) => Promise<void> = async results => {
+  console.log('apply ' + results.length + ' results')
   const prev = activeTextEditor.document.version
   const applied = await activeTextEditor.edit(
     editBuilder => {
@@ -94,6 +96,7 @@ const applyResults: (results: Result[]) => Promise<void> = async results => {
   }
 
   for (const result of results) {
+    console.log(JSON.stringify(result))
     // if (!result) {
     //   console.error('no result client')
     //   continue
@@ -140,7 +143,7 @@ const updateWordsAtOffset: (tags: Tag[]) => void = tags => {
       wordsAtOffsets = {}
     }
     for (const tag of tags) {
-      if (!wordsAtOffsets.hasOwnProperty(tag.offset)) {
+      if (!wordsAtOffsets.hasOwnProperty(tag.previousOffset)) {
         wordsAtOffsets = {}
         break
       }
@@ -150,9 +153,13 @@ const updateWordsAtOffset: (tags: Tag[]) => void = tags => {
     // console.log('(2) set old word to ' + tag.oldWord)
     wordsAtOffsets[tag.offset] = {
       oldWord:
-        (wordsAtOffsets[tag.offset] && wordsAtOffsets[tag.offset].oldWord) ||
+        (wordsAtOffsets[tag.previousOffset] &&
+          wordsAtOffsets[tag.previousOffset].oldWord) ||
         tag.oldWord,
       newWord: tag.word,
+    }
+    if (tag.previousOffset !== tag.offset) {
+      delete wordsAtOffsets[tag.previousOffset]
     }
     tag.oldWord = wordsAtOffsets[tag.offset].oldWord
     // console.log('(2) get old word ' + tag.oldWord)
@@ -232,46 +239,55 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
     if (event.contentChanges.length === 0) {
       return
     }
-    console.time('get tags')
-    const tags = event.contentChanges.reduce((total, change) => {
-      const startPosition = event.document.positionAt(change.rangeOffset)
+    // console.time('get tags')
+    const tags: Tag[] = []
+    let totalInserted = 0
+    const sortedChanges = event.contentChanges
+      .slice()
+      .sort((a, b) => a.rangeOffset - b.rangeOffset)
+    console.log('-------------------------------------')
+    for (const change of sortedChanges) {
+      console.log('total insert' + totalInserted)
+      const startPosition = event.document.positionAt(
+        change.rangeOffset + totalInserted
+      )
       const range = event.document.getWordRangeAtPosition(
         startPosition,
-        /<\/?[a-zA-Z\-]*/
+        /<\/?[a-zA-Z\-0-9]*/
       )
       if (!range) {
-        return total
+        continue
       }
       // TODO more efficient to compute when selection changes?
       const difference = event.document.getText(
         new vscode.Range(range.start, startPosition)
       ).length
-
-      // console.log(previousText.slice(-100))
-      // console.log('diff' + difference)
-      // console.log(
-      //   'middle' +
-      //     previousText.slice(
-      //       change.rangeOffset,
-      //       change.rangeOffset + change.rangeLength
-      //     )
-      // )
       const word = event.document.getText(range)
-      const oldWord =
-        word.slice(0, difference) +
-        previousText.slice(
-          change.rangeOffset,
-          change.rangeOffset + change.rangeLength
-        ) +
-        word.slice(difference + change.text.length)
-      total.push({
+      const firstPart = word.slice(0, difference)
+      console.log('first' + firstPart)
+      const secondPart = previousText.slice(
+        change.rangeOffset,
+        change.rangeOffset + change.rangeLength
+      )
+      console.log('second' + secondPart)
+      const thirdPart = word.slice(difference + change.text.length)
+      console.log('third' + thirdPart)
+      const oldWord = firstPart + secondPart + thirdPart
+      console.log('old word ' + oldWord)
+      const offset = event.document.offsetAt(range.start)
+      tags.push({
         oldWord,
         word,
-        offset: event.document.offsetAt(range.start),
+        offset,
+        previousOffset: offset - totalInserted,
       })
-      return total
-    }, [] as Tag[])
-    console.timeEnd('get tags')
+      totalInserted += change.text.length - change.rangeLength
+    }
+    console.log('tags')
+    console.log(JSON.stringify(tags))
+    console.log('\n')
+    // console.log(JSON.stringify(wordsAtOffsets))
+    // console.timeEnd('get tags')
     updateWordsAtOffset(tags)
     if (tags.length === 0) {
       return
@@ -294,6 +310,7 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       // console.log(event.contentChanges)
       return
     }
+    console.log('-----------------------------------')
 
     // console.log(
     //   'change' + event.contentChanges[0] && event.contentChanges[0].text

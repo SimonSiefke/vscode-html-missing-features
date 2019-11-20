@@ -576,3 +576,40 @@ when renaming met to meta it would require to find a closing met tag which is re
 press and hold a at closing tag
 at some point it stops renaming the starting tag
  -->
+
+<!-- TODO bug jsx
+
+ <Form>
+      <div>
+        <label>
+          Name: <NameField />
+        </label>
+      </div>
+      <button>
+        <label>
+          Address Street: <AddressStreetField />
+        </label>
+      </button>
+
+      <div>
+        <button type="submit" disabled={!canSubmit}>
+          Submit
+        </button>
+      </div>
+
+      <div>
+        <em>{isSubmitting ? "Submitting..." : null}</em>
+      </div>
+    </Forma>
+
+
+    rename closing form
+ -->
+
+<!-- TODO more multicursor tests
+<h1></h1>
+<h1></h1>
+
+type 1 multiple times
+ delete multiple times
+ -->
