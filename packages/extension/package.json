@@ -6,7 +6,6 @@
   "publisher": "SimonSiefke",
   "main": "dist/extensionMain.js",
   "activationEvents": [
-    "*",
     "onLanguage:erb",
     "onLanguage:markdown",
     "onLanguage:javascript",

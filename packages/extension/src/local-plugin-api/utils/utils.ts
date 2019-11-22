@@ -1,25 +1,30 @@
-import { TextDocument } from 'vscode'
 import * as vscode from 'vscode'
-import { constants } from '../../constants'
 
 export interface Utils {
-  readonly isIgnoredDocument: (document: TextDocument) => boolean
+  readonly isRelevantDocument: (document: vscode.TextDocument) => boolean
 }
 
+const allowedLanguageIds: string[] = [
+  'erb',
+  'html',
+  'markdown',
+  'javascript',
+  'javascriptreact',
+  'plaintext',
+  'php',
+  'razor',
+  'svelte',
+  'svg',
+  'typescript',
+  'typescriptreact',
+  'xml',
+  'vue',
+]
+const isRelevantDocument: Utils['isRelevantDocument'] = document =>
+  !vscode.window.activeTextEditor ||
+  vscode.window.activeTextEditor.document !== document ||
+  allowedLanguageIds.includes(document.languageId)
+
 export const utils: Utils = {
-  isIgnoredDocument: document => {
-    if (
-      !vscode.window.activeTextEditor ||
-      vscode.window.activeTextEditor.document !== document
-    ) {
-      return true
-    }
-    // if (!constants.allowedLanguageIds.includes(document.languageId)) {
-    //   return true
-    // }
-    if (document.getText().length > constants.maxAllowedChars) {
-      return true
-    }
-    return false
-  },
+  isRelevantDocument,
 }

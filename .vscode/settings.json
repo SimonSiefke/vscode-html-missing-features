@@ -27,5 +27,9 @@
     "**/*.d.ts": false,
     "**/tsconfig.tsbuildinfo": false,
     "**/deprecated": false
-  }
+  },
+  "cSpell.words": [
+    "formulahendry",
+    "vincaslt"
+  ]
 }

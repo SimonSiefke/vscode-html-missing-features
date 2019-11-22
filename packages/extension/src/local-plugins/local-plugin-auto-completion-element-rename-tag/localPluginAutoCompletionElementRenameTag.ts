@@ -208,7 +208,7 @@ const doAutoCompletionElementRenameTag: (
   }
   const afterVersion = activeTextEditor.document.version
   if (beforeVersion !== afterVersion) {
-    console.log('return 2')
+    // console.log('return 2')
     return
   }
   await applyResults(results)
@@ -225,7 +225,7 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
   })
   api.vscodeProxy.workspace.onDidChangeTextDocument(async event => {
     const currentText = event.document.getText()
-    if (api.utils.isIgnoredDocument(event.document)) {
+    if (!api.utils.isRelevantDocument(event.document)) {
       return
     }
     if (event.contentChanges.length === 0) {
@@ -262,16 +262,16 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
       const previousTextRight = previousText.slice(change.rangeOffset)
       const previousTagNameRight = previousTextRight.match(tagNameRERight)
 
-      console.log(lineTagNameLeft)
-      console.log(lineTagNameRight)
+      // console.log(lineTagNameLeft)
+      // console.log(lineTagNameRight)
 
-      console.log(previousTagNameRight)
-      console.log(previousText)
+      // console.log(previousTagNameRight)
+      // console.log(previousText)
       let newWord: string
       let oldWord: string
 
       if (!lineTagNameLeft) {
-        console.log('continue')
+        // console.log('continue')
         totalInserted += change.text.length - change.rangeLength
         continue
       }
@@ -287,9 +287,9 @@ export const localPluginAutoCompletionElementRenameTag: LocalPlugin = api => {
 
       const offset =
         change.rangeOffset - lineTagNameLeft[0].length + totalInserted
-      console.log('new word' + newWord)
-      console.log('old word' + oldWord)
-      console.log('offset' + offset)
+      // console.log('new word' + newWord)
+      // console.log('old word' + oldWord)
+      // console.log('offset' + offset)
       tags.push({
         oldWord,
         word: newWord,
