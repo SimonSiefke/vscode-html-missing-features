@@ -1,5 +1,9 @@
 {
   "name": "html-missing-features",
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ],
   "displayName": "Html missing features",
   "version": "1.0.0-dev",
   "description": "Some missing features for html that are not built into VSCode",
