@@ -15,7 +15,7 @@
     "html-parser": "^1.0.0-dev"
   },
   "devDependencies": {
-    "@types/jest": "^25.0.0",
+    "@types/jest": "^26.0.0",
     "jest": "^26.0.0",
     "ts-jest": "^24.1.0"
   }
